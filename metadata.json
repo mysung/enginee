@@ -1,0 +1,8 @@
+{
+  "name": "Remix 홍길동 미니 홈페이지",
+  "description": "다크 모드와 인디고 포인트를 적용한 단일 HTML 기반 미니 홈페이지, AI 비서 챗봇 및 실시간 방문자 카운터/최근 활동 로그",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

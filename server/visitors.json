@@ -1,0 +1,65 @@
+{
+  "total": 1287,
+  "today": 25,
+  "lastDate": "2026-09-16",
+  "recentLogs": [
+    {
+      "id": "cheer-1789547841001-c864",
+      "visitorNo": 1287,
+      "name": "테스트 방문자",
+      "action": "응원 한마디",
+      "message": "잘 보고 갑니다!",
+      "emoji": "✨",
+      "device": "기타 기기 · 브라우저",
+      "timestamp": 1789547841001
+    },
+    {
+      "id": "log-1789547838464-2m9m",
+      "visitorNo": 1287,
+      "name": "방문자 #1287",
+      "action": "홈페이지 방문",
+      "device": "기타 기기 · 브라우저",
+      "timestamp": 1789547838464
+    },
+    {
+      "id": "log-seed-1",
+      "visitorNo": 1286,
+      "name": "방문자",
+      "action": "홈페이지 방문",
+      "message": "미니 웹앱 갤러리 잘 둘러보고 갑니다! ✨",
+      "emoji": "✨",
+      "device": "macOS · Chrome",
+      "timestamp": 1789547655177
+    },
+    {
+      "id": "log-seed-2",
+      "visitorNo": 1285,
+      "name": "동료 개발자",
+      "action": "응원 한마디",
+      "message": "AI 비서 챗봇 응답이 빠르고 유용하네요 🚀",
+      "emoji": "🚀",
+      "device": "Windows · Edge",
+      "timestamp": 1789546755177
+    },
+    {
+      "id": "log-seed-3",
+      "visitorNo": 1284,
+      "name": "방문자",
+      "action": "홈페이지 방문",
+      "message": "오늘 뭐 먹지? 웹앱 플레이해봤습니다 🍱",
+      "emoji": "🍱",
+      "device": "iOS · Safari",
+      "timestamp": 1789545135177
+    },
+    {
+      "id": "log-seed-4",
+      "visitorNo": 1283,
+      "name": "익명의 방문자",
+      "action": "응원 한마디",
+      "message": "포트폴리오 디자인이 깔끔하고 멋집니다! 👍",
+      "emoji": "👍",
+      "device": "Android · Chrome",
+      "timestamp": 1789540635177
+    }
+  ]
+}
