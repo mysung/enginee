@@ -32,8 +32,8 @@ export async function generateChatReply(
   const bio = context.bio || '';
   const skills = Array.isArray(context.skills) ? context.skills.join(', ') : (context.skills || '');
   const webapps = Array.isArray(context.webapps)
-    ? context.webapps.map((w: any) => `${w.title || w.name || ''} (${w.description || ''})`).join('; ')
-    : (context.webapps || '오늘 뭐 먹지? v3');
+    ? context.webapps.map((w: any) => `${w.title || w.name || ''} (${w.desc || w.description || ''}${w.url ? ', 배포 URL: ' + w.url : ''})`).join('; ')
+    : (context.webapps || '오늘 뭐 먹지? v3, 구글 맵 기반 트레킹 플래너');
   const careers = Array.isArray(context.careers)
     ? context.careers.map((c: any) => `${c.title || ''} (${c.company || ''}, ${c.period || ''})`).join('; ')
     : '';

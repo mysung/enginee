@@ -107,7 +107,7 @@
       // 반드시 body의 인라인 스크립트보다 먼저 실행되어야 함
       (function checkDataVersion() {
         try {
-          var APP_DATA_VERSION = '2026-09-15-v1789461457262';
+          var APP_DATA_VERSION = '2026-09-15-v1789650687252';
           var storedVersion = localStorage.getItem('app_data_version');
           var savedAvatar = localStorage.getItem('profile_image');
           // 이전 버전이거나 profile.jpg, unsplash 등 이전 기본값이 저장되어 있는 경우 public/face.jpg로 강제 초기화
@@ -572,8 +572,22 @@ Ingenium의 창의와 지혜를 바탕으로
               </div>
             </div>
 
-            <!-- Controls: Refresh & Footprint Button -->
-            <div class="flex items-center gap-2 self-start sm:self-auto">
+            <!-- Controls: Refresh & Footprint Button (발자국 기능 활성화 시에만 표시) -->
+            <div class="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+              <!-- Admin Quick Toggle Badge (관리자 로그인 시에만 나타나는 원클릭 토글 버튼) -->
+              <div id="admin-footprint-toggle-badge" class="admin-only hidden items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-300 shadow-sm">
+                <span class="text-[11px] text-slate-400 font-medium">관리자:</span>
+                <button
+                  type="button"
+                  id="admin-quick-toggle-footprint-btn"
+                  onclick="toggleCheerFeatureFromQuickAdmin()"
+                  class="px-2 py-0.5 rounded-lg font-semibold text-[11px] transition-all cursor-pointer bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30"
+                  title="발자국 남기기 기능 ON/OFF 즉시 토글"
+                >
+                  <i class="fa-solid fa-toggle-off mr-1 text-rose-400"></i> 발자국 기능 (OFF)
+                </button>
+              </div>
+
               <button
                 type="button"
                 id="visitor-refresh-btn"
@@ -584,11 +598,13 @@ Ingenium의 창의와 지혜를 바탕으로
                 <i class="fa-solid fa-rotate-right text-xs"></i>
                 <span class="hidden sm:inline">새로고침</span>
               </button>
+
+              <!-- 발자국 남기기 버튼 (기능이 일시 중지된 상태에서는 페이지에 절대 표시되지 않음) -->
               <button
                 type="button"
                 id="toggle-cheer-form-btn"
                 onclick="toggleCheerForm()"
-                class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                class="hidden px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <i class="fa-solid fa-feather-pointed text-xs"></i>
                 <span>발자국 남기기</span>
@@ -745,10 +761,10 @@ Ingenium의 창의와 지혜를 바탕으로
           type="button"
           onclick="openAdminModal()"
           class="text-[11px] text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-slate-900 border border-slate-900 hover:border-slate-800 cursor-pointer"
-          title="소유자 관리자 모드"
+          title="소유자 관리자 모드 (발자국 기능 ON/OFF 및 사이트 콘텐츠 관리)"
         >
           <i id="footer-admin-icon" class="fa-solid fa-lock text-[10px]"></i>
-          <span id="footer-admin-text">관리자 모드</span>
+          <span id="footer-admin-text">관리자 모드 (발자국 ON/OFF 및 관리)</span>
         </button>
       </footer>
     </div>
@@ -2212,27 +2228,88 @@ Ingenium의 창의와 지혜를 바탕으로
           <!-- Tab Selector inside Admin Modal -->
           <div class="flex bg-slate-950 p-1 rounded-2xl border border-slate-800 gap-1 text-xs font-semibold">
             <button
+              id="admin-subtab-btn-features"
+              type="button"
+              onclick="switchAdminSubTab('features')"
+              class="flex-1 py-2 px-2.5 rounded-xl bg-indigo-600 text-white shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <i class="fa-solid fa-sliders"></i>
+              <span>기능 설정</span>
+            </button>
+            <button
               id="admin-subtab-btn-pwd"
               type="button"
               onclick="switchAdminSubTab('pwd')"
-              class="flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              class="flex-1 py-2 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <i class="fa-solid fa-key"></i>
-              <span>비밀번호 변경</span>
+              <span>비밀번호</span>
             </button>
             <button
               id="admin-subtab-btn-export"
               type="button"
               onclick="switchAdminSubTab('export')"
-              class="flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              class="flex-1 py-2 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <i class="fa-solid fa-file-export"></i>
-              <span>데이터 백업 & 영구 반영</span>
+              <span>영구 반영</span>
             </button>
           </div>
 
-          <!-- SubTab 1: 비밀번호 변경 -->
-          <div id="admin-subtab-pwd" class="flex flex-col gap-3">
+          <!-- SubTab 1: 기능 설정 (방문자 발자국 토글 등) -->
+          <div id="admin-subtab-features" class="flex flex-col gap-3.5">
+            <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800/90 flex flex-col gap-3">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-white text-sm">방문자 발자국 남기기 기능</h4>
+                    <p class="text-slate-400 text-xs mt-0.5 leading-relaxed">
+                      홈페이지 하단에서 방문자가 응원 한마디나 이모지 소감을 등록할 수 있는 기능입니다.
+                    </p>
+                  </div>
+                </div>
+                <!-- Toggle Switch -->
+                <label class="relative inline-flex items-center cursor-pointer flex-shrink-0" title="발자국 남기기 기능 활성화/비활성화 토글">
+                  <input
+                    type="checkbox"
+                    id="admin-cheer-toggle-checkbox"
+                    onchange="handleAdminCheerToggleChange(this.checked)"
+                    class="sr-only peer"
+                  />
+                  <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                </label>
+              </div>
+
+              <!-- Status summary banner inside settings -->
+              <div id="admin-cheer-toggle-status-banner" class="p-2.5 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 flex items-center justify-between text-xs">
+                <span class="flex items-center gap-1.5 font-medium">
+                  <i class="fa-solid fa-circle-pause text-amber-400"></i>
+                  <span id="admin-cheer-status-text">발자국 남기기가 당분간 일시 중지되어 있습니다. (신규 작성 차단)</span>
+                </span>
+                <span id="admin-cheer-status-badge" class="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-bold text-[10px]">
+                  OFF
+                </span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-900/50 border border-slate-800 text-slate-400 text-[11.5px] leading-relaxed">
+              <p class="font-semibold text-slate-300 mb-1 flex items-center gap-1.5">
+                <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                <span>토글 작동 원리</span>
+              </p>
+              <ul class="space-y-1 list-disc list-inside">
+                <li><strong class="text-slate-200">OFF로 전환 시:</strong> 일반 방문자에게 발자국 남기기 버튼과 입력 폼이 숨겨지며 신규 등록이 차단됩니다. (기존 누적 통계와 발자국 목록은 안전하게 보존)</li>
+                <li><strong class="text-slate-200">ON으로 전환 시:</strong> 일반 방문자가 자유롭게 응원 메시지와 이모지를 남길 수 있습니다.</li>
+                <li><strong class="text-slate-200">원클릭 토글:</strong> 관리자 모드 중에는 하단 방문자 통계 바에서도 즉시 켜고 끌 수 있습니다.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- SubTab 2: 비밀번호 변경 -->
+          <div id="admin-subtab-pwd" class="hidden flex-col gap-3">
             <form onsubmit="handleAdminChangePassword(event)" class="flex flex-col gap-3">
               <div>
                 <label for="admin-change-current" class="block text-xs font-semibold text-slate-300 mb-1">
@@ -2363,12 +2440,134 @@ Ingenium의 창의와 지혜를 바탕으로
       const ADMIN_STORAGE_KEY = 'is_admin_mode';
       const ADMIN_PWD_HASH_KEY = 'admin_site_pwd_hash';
       // 소스 코드에는 평문 비밀번호가 노출되지 않으며, 오직 SHA-256 해시값만 저장됩니다.
-      const DEFAULT_ADMIN_PWD_HASH = '65eeb3ed8a8b679adeefbf867927f91ca4358f6afed804be3d046148c72cb779';
+      const DEFAULT_ADMIN_PWD_HASH = '3f8337474084bc94d8bff4c18036fa9174f8b462cdc0c8939e519e267f98ac51';
       // 초기 보조 기본 비밀번호(admin1234, 1234) 해시값
       const INITIAL_FALLBACK_HASHES = [
         'ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270', // admin1234
         '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'  // 1234
       ];
+
+      // ----------------------------------------------------
+      // Feature Configuration (발자국 남기기 기능 관리자 설정: 당분간 일시 중지)
+      // ----------------------------------------------------
+      const DEFAULT_CHEER_FEATURE_ENABLED = false;
+      const CHEER_FEATURE_STORAGE_KEY = 'site_cheer_feature_enabled_v3';
+
+      function isCheerFeatureEnabled() {
+        try {
+          const stored = localStorage.getItem(CHEER_FEATURE_STORAGE_KEY);
+          if (stored !== null) {
+            return stored === 'true';
+          }
+        } catch (e) {}
+        return DEFAULT_CHEER_FEATURE_ENABLED;
+      }
+
+      function setCheerFeatureEnabled(enabled) {
+        if (!verifyAdminOrPrompt()) return;
+        try {
+          localStorage.setItem(CHEER_FEATURE_STORAGE_KEY, String(Boolean(enabled)));
+        } catch (e) {}
+        applyCheerFeatureStateToUI();
+        syncAllDataToDeploy(true);
+        showToast(
+          enabled
+            ? '발자국 남기기 기능이 다시 활성화되었습니다. ✨ (발자국 남기기 버튼이 표시됩니다)'
+            : '발자국 남기기 기능이 일시 중지되었습니다. 🔒 (발자국 남기기 버튼 숨김)',
+          3000
+        );
+      }
+
+      function openFootprintAdminToggle() {
+        if (isAdminActive) {
+          openAdminModal('features');
+        } else {
+          openAdminModal('pwd');
+          showToast('🔒 발자국 남기기 기능 ON/OFF 설정을 위해 관리자 비밀번호를 입력해주세요.');
+        }
+      }
+
+      function toggleCheerFeatureFromQuickAdmin() {
+        if (!verifyAdminOrPrompt()) return;
+        const current = isCheerFeatureEnabled();
+        setCheerFeatureEnabled(!current);
+      }
+
+      function handleAdminCheerToggleChange(checked) {
+        if (!verifyAdminOrPrompt()) return;
+        setCheerFeatureEnabled(checked);
+      }
+
+      function applyCheerFeatureStateToUI() {
+        const isEnabled = isCheerFeatureEnabled();
+
+        // 1. Visitor header quick admin badge (관리자 모드 활성화 시에만 제어기 표시)
+        const quickBadge = document.getElementById('admin-footprint-toggle-badge');
+        const quickBtn = document.getElementById('admin-quick-toggle-footprint-btn');
+        if (quickBadge) {
+          if (isAdminActive) {
+            quickBadge.classList.remove('hidden');
+            quickBadge.classList.add('flex');
+          } else {
+            quickBadge.classList.add('hidden');
+            quickBadge.classList.remove('flex');
+          }
+        }
+        if (quickBtn) {
+          if (isEnabled) {
+            quickBtn.className = 'px-2 py-0.5 rounded-lg font-semibold text-[11px] transition-all cursor-pointer bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30';
+            quickBtn.innerHTML = '<i class="fa-solid fa-toggle-on mr-1 text-emerald-400"></i> 사용 중 (ON)';
+            quickBtn.title = '클릭하여 발자국 남기기 즉시 일시중지 (OFF)';
+          } else {
+            quickBtn.className = 'px-2 py-0.5 rounded-lg font-semibold text-[11px] transition-all cursor-pointer bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30';
+            quickBtn.innerHTML = '<i class="fa-solid fa-toggle-off mr-1 text-rose-400"></i> 일시중지 (OFF) - 클릭하여 켜기';
+            quickBtn.title = '클릭하여 발자국 남기기 즉시 다시 활성화 (ON)';
+          }
+        }
+
+        // 2. Admin modal settings elements
+        const modalCheckbox = document.getElementById('admin-cheer-toggle-checkbox');
+        if (modalCheckbox) {
+          modalCheckbox.checked = isEnabled;
+        }
+        const modalStatusText = document.getElementById('admin-cheer-status-text');
+        const modalStatusBadge = document.getElementById('admin-cheer-status-badge');
+        const modalStatusBanner = document.getElementById('admin-cheer-toggle-status-banner');
+        if (modalStatusText && modalStatusBadge && modalStatusBanner) {
+          if (isEnabled) {
+            modalStatusText.textContent = '발자국 남기기가 활성화되어 있습니다. (방문자 참여 가능)';
+            modalStatusBadge.textContent = 'ON';
+            modalStatusBadge.className = 'px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-[10px]';
+            modalStatusBanner.className = 'p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 flex items-center justify-between text-xs';
+          } else {
+            modalStatusText.textContent = '발자국 남기기가 당분간 일시 중지되어 있습니다. (버튼 및 신규 작성 숨김)';
+            modalStatusBadge.textContent = 'OFF';
+            modalStatusBadge.className = 'px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-bold text-[10px]';
+            modalStatusBanner.className = 'p-2.5 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 flex items-center justify-between text-xs';
+          }
+        }
+
+        // 3. Visitor button and form (기능이 중지된 상태에서는 페이지에 절대 표시되지 않음)
+        const cheerBtn = document.getElementById('toggle-cheer-form-btn');
+        const cheerForm = document.getElementById('cheer-form-container');
+
+        if (isEnabled) {
+          if (cheerBtn) {
+            cheerBtn.classList.remove('hidden');
+            cheerBtn.className = 'px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all flex items-center gap-1.5 cursor-pointer';
+            cheerBtn.title = '발자국 남기기';
+          }
+        } else {
+          // 중지된 상태에서는 일반 방문자 및 관리자 상관없이 페이지에 발자국 남기기 버튼 및 폼이 절대 노출되지 않음
+          if (cheerBtn) {
+            cheerBtn.classList.add('hidden');
+            cheerBtn.classList.remove('flex');
+          }
+          if (cheerForm) {
+            cheerForm.classList.add('hidden');
+          }
+        }
+      }
 
       // SHA-256 단방향 해시 계산 유틸리티 (UTF-8 완벽 지원)
       function calculateSha256(ascii) {
@@ -2530,6 +2729,10 @@ Ingenium의 창의와 지혜를 바탕으로
             }
           }
         }
+
+        if (typeof applyCheerFeatureStateToUI === 'function') {
+          applyCheerFeatureStateToUI();
+        }
       }
 
       function verifyAdminOrPrompt() {
@@ -2551,7 +2754,7 @@ Ingenium의 창의와 지혜를 바탕으로
         }
       }
 
-      function openAdminModal(initialSubTab = 'pwd') {
+      function openAdminModal(initialSubTab = 'features') {
         const modal = document.getElementById('admin-modal');
         const box = document.getElementById('admin-modal-box');
         const loggedOutView = document.getElementById('admin-view-logged-out');
@@ -2564,7 +2767,7 @@ Ingenium의 창의와 지혜를 바탕으로
             loggedInView.classList.remove('hidden');
             loggedInView.classList.add('flex');
           }
-          switchAdminSubTab(initialSubTab);
+          switchAdminSubTab(initialSubTab || 'features');
           refreshAdminExportPreview();
         } else {
           if (loggedInView) {
@@ -2630,7 +2833,7 @@ Ingenium의 창의와 지혜를 바탕으로
             sessionStorage.setItem(ADMIN_STORAGE_KEY, 'true');
           }
           applyAdminStateToUI();
-          openAdminModal('pwd');
+          openAdminModal('features');
           showToast('관리자(소유자) 모드로 잠금 해제되었습니다! 🔓');
         } else {
           showToast('비밀번호가 올바르지 않습니다. 다시 입력해주세요. ❌');
@@ -2651,27 +2854,37 @@ Ingenium의 창의와 지혜를 바탕으로
       }
 
       function switchAdminSubTab(subTab) {
+        const btnFeatures = document.getElementById('admin-subtab-btn-features');
         const btnPwd = document.getElementById('admin-subtab-btn-pwd');
         const btnExport = document.getElementById('admin-subtab-btn-export');
+        const secFeatures = document.getElementById('admin-subtab-features');
         const secPwd = document.getElementById('admin-subtab-pwd');
         const secExport = document.getElementById('admin-subtab-export');
 
-        if (!btnPwd || !btnExport || !secPwd || !secExport) return;
+        const tabs = [
+          { key: 'features', btn: btnFeatures, sec: secFeatures },
+          { key: 'pwd', btn: btnPwd, sec: secPwd },
+          { key: 'export', btn: btnExport, sec: secExport }
+        ];
 
-        if (subTab === 'pwd') {
-          btnPwd.className = 'flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer';
-          btnExport.className = 'flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer';
-          secPwd.classList.remove('hidden');
-          secPwd.classList.add('flex');
-          secExport.classList.add('hidden');
-          secExport.classList.remove('flex');
-        } else {
-          btnExport.className = 'flex-1 py-2 px-3 rounded-xl bg-indigo-600 text-white shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer';
-          btnPwd.className = 'flex-1 py-2 px-3 rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer';
-          secExport.classList.remove('hidden');
-          secExport.classList.add('flex');
-          secPwd.classList.add('hidden');
-          secPwd.classList.remove('flex');
+        tabs.forEach(t => {
+          if (!t.btn || !t.sec) return;
+          if (t.key === subTab) {
+            t.btn.className = 'flex-1 py-2 px-2.5 rounded-xl bg-indigo-600 text-white shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer';
+            t.sec.classList.remove('hidden');
+            t.sec.classList.add('flex');
+          } else {
+            t.btn.className = 'flex-1 py-2 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer';
+            t.sec.classList.add('hidden');
+            t.sec.classList.remove('flex');
+          }
+        });
+
+        if (subTab === 'features') {
+          if (typeof applyCheerFeatureStateToUI === 'function') {
+            applyCheerFeatureStateToUI();
+          }
+        } else if (subTab === 'export') {
           refreshAdminExportPreview();
         }
       }
@@ -2717,7 +2930,8 @@ Ingenium의 창의와 지혜를 바탕으로
           careers: typeof careerList !== 'undefined' ? careerList : DEFAULT_CAREERS,
           customSections: typeof customSectionList !== 'undefined' ? customSectionList : DEFAULT_CUSTOM_SECTIONS,
           webapps: typeof webappList !== 'undefined' ? webappList : DEFAULT_WEBAPPS,
-          adminPasswordHash: getStoredAdminPasswordHash()
+          adminPasswordHash: getStoredAdminPasswordHash(),
+          cheerFeatureEnabled: isCheerFeatureEnabled()
         };
       }
 
@@ -2842,6 +3056,11 @@ Ingenium의 창의와 지혜를 바탕으로
           // 7. Admin pwd hash (평문이 아닌 SHA-256 해시값만 index.html에 저장)
           if (data.adminPasswordHash) {
             html = html.replace(/(^[ \t]*const DEFAULT_ADMIN_PWD_HASH = )['"].*?['"];/m, `$1'${data.adminPasswordHash}';`);
+          }
+
+          // 8. Cheer feature enabled flag
+          if (typeof data.cheerFeatureEnabled === 'boolean') {
+            html = html.replace(/(^[ \t]*const DEFAULT_CHEER_FEATURE_ENABLED = )(?:true|false);/m, `$1${data.cheerFeatureEnabled};`);
           }
 
           const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
@@ -3632,6 +3851,10 @@ Ingenium의 창의와 지혜를 바탕으로
       let selectedCheerEmoji = '✨';
 
       function initVisitorSection() {
+        if (typeof applyCheerFeatureStateToUI === 'function') {
+          applyCheerFeatureStateToUI();
+        }
+
         // 1. Try to render quickly from local cache if present
         try {
           const cached = localStorage.getItem('visitor_cache_data');
@@ -3791,6 +4014,13 @@ Ingenium의 창의와 지혜를 바탕으로
       }
 
       function toggleCheerForm(forceState) {
+        if (!isCheerFeatureEnabled()) {
+          showToast('현재 발자국 남기기 기능이 일시 중지 상태입니다. 🔒');
+          const formEl = document.getElementById('cheer-form-container');
+          if (formEl) formEl.classList.add('hidden');
+          return;
+        }
+
         const formEl = document.getElementById('cheer-form-container');
         if (!formEl) return;
         if (typeof forceState === 'boolean') {
@@ -3822,6 +4052,11 @@ Ingenium의 창의와 지혜를 바탕으로
       }
 
       async function submitVisitorCheer() {
+        if (!isCheerFeatureEnabled()) {
+          showToast('현재 발자국 남기기 기능이 일시 중지되어 있습니다. 🔒');
+          return;
+        }
+
         const nameInput = document.getElementById('cheer-name-input');
         const msgInput = document.getElementById('cheer-msg-input');
         const submitBtn = document.getElementById('cheer-submit-btn');
@@ -3934,10 +4169,13 @@ Ingenium의 창의와 지혜를 바탕으로
         if (!container) return;
 
         if (!logs || logs.length === 0) {
+          const emptyMsg = isCheerFeatureEnabled()
+            ? '아직 등록된 최근 발자국이 없습니다. 첫 발자국을 남겨보세요!'
+            : '아직 등록된 최근 방문 및 발자국 기록이 없습니다.';
           container.innerHTML = `
             <div class="p-4 rounded-xl bg-slate-950/40 border border-slate-800/60 text-center text-xs text-slate-400 flex flex-col items-center gap-1.5">
               <i class="fa-solid fa-shoe-prints text-slate-500 text-sm"></i>
-              <span>아직 등록된 최근 발자국이 없습니다. 첫 발자국을 남겨보세요!</span>
+              <span>${emptyMsg}</span>
             </div>
           `;
           return;
@@ -4365,6 +4603,23 @@ Ingenium의 창의와 지혜를 바탕으로
     "isLive": true
   },
   {
+    "id": "webapp-wherewego",
+    "title": "구글 맵 기반 트레킹 플래너",
+    "badge": "Live 정식 배포",
+    "badgeColor": "emerald",
+    "icon": "fa-solid fa-map-location-dot",
+    "desc": "구글 맵(Google Maps)을 기반으로 맞춤 트레킹 코스와 하이킹 일정을 스마트하게 계획하고 탐색할 수 있는 반응형 웹 애플리케이션입니다.\n경로 플래닝, 코스 거리 및 고도 확인, 주변 명소 탐색 기능을 지원합니다.",
+    "url": "https://wherewego.pages.dev/",
+    "tags": [
+      "GoogleMaps",
+      "CloudflarePages",
+      "Trekking",
+      "wherewego.pages.dev"
+    ],
+    "isFeatured": false,
+    "isLive": true
+  },
+  {
     "id": "webapp-ai-summary",
     "title": "AI 스마트 텍스트 요약기",
     "badge": "개발 중 (80%)",
@@ -4418,6 +4673,17 @@ Ingenium의 창의와 지혜를 바탕으로
           if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) {
+              // Ensure newly added default apps (like wherewego) are merged if missing
+              const hasWherewego = parsed.some(w => w.id === 'webapp-wherewego' || (w.url && w.url.includes('wherewego.pages.dev')));
+              if (!hasWherewego) {
+                const defaultWherewego = DEFAULT_WEBAPPS.find(w => w.id === 'webapp-wherewego');
+                if (defaultWherewego) {
+                  parsed.splice(1, 0, defaultWherewego);
+                  try {
+                    localStorage.setItem('profile_webapps', JSON.stringify(parsed));
+                  } catch (e) {}
+                }
+              }
               return parsed;
             }
           }
@@ -4573,16 +4839,28 @@ Ingenium의 창의와 지혜를 바탕으로
               </div>
             `;
           } else {
+            const isLiveApp = app.isLive || (app.url && app.url.trim() !== '');
+            const badgeColorClass = isLiveApp || app.badgeColor === 'emerald'
+              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+              : (app.badgeColor === 'amber'
+                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20');
+
+            const iconColorClass = isLiveApp || app.badgeColor === 'emerald'
+              ? 'bg-emerald-600/20 text-emerald-400 border-emerald-500/30'
+              : 'bg-indigo-600/20 text-indigo-400 border-indigo-500/30';
+
             return `
               <div class="group relative p-5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 transition-all duration-300 flex flex-col justify-between hover:shadow-lg hover:shadow-indigo-600/10">
                 <div>
                   <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-lg bg-indigo-600/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30 group-hover:scale-105 transition-transform">
+                    <div class="w-10 h-10 rounded-lg ${iconColorClass} flex items-center justify-center border group-hover:scale-105 transition-transform">
                       <i class="${escapeHtml(app.icon || 'fa-solid fa-cube')}"></i>
                     </div>
                     <div class="flex items-center gap-1.5">
-                      <span class="px-2.5 py-0.5 rounded text-[11px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                        ${escapeHtml(app.badge || '준비 중')}
+                      <span class="px-2.5 py-0.5 rounded text-[11px] font-semibold border flex items-center ${badgeColorClass}">
+                        ${isLiveApp ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span>' : ''}
+                        ${escapeHtml(app.badge || (isLiveApp ? 'Live 배포' : '준비 중'))}
                       </span>
                       <button
                         type="button"
@@ -4600,8 +4878,25 @@ Ingenium의 창의와 지혜를 바탕으로
                   <p class="text-xs text-slate-400 mt-1.5 leading-relaxed whitespace-pre-line">
                     ${escapeHtml(app.desc)}
                   </p>
+
+                  ${app.url ? `
+                  <div class="mt-3.5 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                    <a
+                      href="${escapeHtml(app.url)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                      <span>배포 사이트 열기</span>
+                    </a>
+                    <span class="font-mono text-[10.5px] text-slate-400 truncate max-w-[150px]" title="${escapeHtml(app.url)}">
+                      ${escapeHtml(app.url.replace(/^https?:\/\//, ''))}
+                    </span>
+                  </div>
+                  ` : ''}
                 </div>
-                <div class="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
                   <span class="truncate max-w-[200px]">
                     ${(app.tags || []).map(t => `#${escapeHtml(t)}`).join(' ')}
                   </span>

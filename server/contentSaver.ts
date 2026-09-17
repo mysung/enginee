@@ -142,6 +142,14 @@ export function saveContentToHtml(data: any): { success: boolean; version: strin
     );
   }
 
+  // 8. Update DEFAULT_CHEER_FEATURE_ENABLED
+  if (typeof data.cheerFeatureEnabled === 'boolean') {
+    html = html.replace(
+      /(^[ \t]*const DEFAULT_CHEER_FEATURE_ENABLED = )(true|false);/m,
+      `$1${data.cheerFeatureEnabled};`
+    );
+  }
+
   // Write updated index.html
   fs.writeFileSync(indexPath, html, 'utf-8');
 
