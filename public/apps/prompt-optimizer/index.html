@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>프롬프트 옵티마이저 | 엔지니 미니 웹앱</title>
+  <meta name="description" content="모호한 질문을 입력하면 ChatGPT, Claude, Gemini에서 최고 품질의 결과를 이끌어내는 정교한 프롬프트로 변환하는 AI 도구" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans KR"', '"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .chat-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-scroll::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background: rgba(51, 65, 85, 0.8);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0b0f19] text-slate-100 selection:bg-amber-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-colors border border-slate-700">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>미니홈피 메인</span>
+      </a>
+      <div class="h-4 w-px bg-slate-700"></div>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-sm shadow-sm">
+          <i class="fa-solid fa-sliders"></i>
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            프롬프트 옵티마이저
+            <span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">Live v1.0</span>
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="copyShareUrl()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 transition-colors flex items-center gap-1.5">
+        <i class="fa-solid fa-share-nodes text-[11px]"></i>
+        <span class="hidden sm:inline">공유</span>
+      </button>
+      <a href="/" class="text-xs text-slate-400 hover:text-amber-400 transition-colors flex items-center gap-1">
+        <span>엔지니 홈피</span>
+        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+
+    <!-- Top Banner -->
+    <div class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-slate-900 to-slate-900 border border-amber-500/30 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <span>모호한 한 줄 질문을 최고 성능의 구조화된 시스템 프롬프트로 변환</span>
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+          Role(역할) · Task(과업) · Context(맥락) · Constraints(제약사항) 프레임워크를 적용하여 환각을 최소화하고 원하는 결과물을 정확히 유도합니다.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-amber-400 font-medium bg-amber-950/50 px-3 py-1.5 rounded-xl border border-amber-500/20 flex-shrink-0">
+        <i class="fa-solid fa-brain"></i>
+        <span>ChatGPT · Claude · Gemini 최적화</span>
+      </div>
+    </div>
+
+    <!-- Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+
+      <!-- Left Column: Input & Configuration -->
+      <section class="flex flex-col gap-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg">
+        
+        <!-- Target LLM Selection -->
+        <div class="flex flex-col gap-2">
+          <label class="text-xs font-bold text-slate-300 flex items-center justify-between">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-microchip text-amber-400"></i> 타겟 AI 모델
+            </span>
+            <span class="text-[11px] text-slate-400">모델 특성에 맞춰 지시문 조정</span>
+          </label>
+          <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+            <button type="button" onclick="selectModel('chatgpt')" id="btn-m-chatgpt" class="model-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-amber-600/20 text-amber-300 border-amber-500/50 shadow-sm flex flex-col items-center gap-1 text-center">
+              <i class="fa-solid fa-robot text-sm"></i>
+              <span>ChatGPT</span>
+            </button>
+            <button type="button" onclick="selectModel('claude')" id="btn-m-claude" class="model-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center gap-1 text-center">
+              <i class="fa-solid fa-feather text-sm"></i>
+              <span>Claude</span>
+            </button>
+            <button type="button" onclick="selectModel('gemini')" id="btn-m-gemini" class="model-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center gap-1 text-center">
+              <i class="fa-solid fa-sparkles text-sm"></i>
+              <span>Gemini</span>
+            </button>
+            <button type="button" onclick="selectModel('code')" id="btn-m-code" class="model-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center gap-1 text-center">
+              <i class="fa-solid fa-code text-sm"></i>
+              <span>코딩 / Cursor</span>
+            </button>
+            <button type="button" onclick="selectModel('creative')" id="btn-m-creative" class="model-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center gap-1 text-center">
+              <i class="fa-solid fa-palette text-sm"></i>
+              <span>창작 / 이미지</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Role / Persona Style -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-user-tie text-amber-400"></i>
+              전문가 페르소나 (어조 및 관점)
+            </label>
+            <div class="flex items-center gap-1">
+              <span class="text-[11px] text-slate-400">예시 프롬프트:</span>
+              <button onclick="applySample('code')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">코드 최적화</button>
+              <button onclick="applySample('coldmail')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">콜드 메일</button>
+              <button onclick="applySample('strategy')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">사업 기획안</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <button type="button" onclick="selectStyle('expert')" id="btn-s-expert" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-amber-600/20 text-amber-300 border-amber-500/50 shadow-sm text-left flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>15년차 최고 전문가</span>
+            </button>
+            <button type="button" onclick="selectStyle('dev')" id="btn-s-dev" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 text-left flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-500"></span>
+              <span>수석 아키텍트</span>
+            </button>
+            <button type="button" onclick="selectStyle('business')" id="btn-s-business" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 text-left flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-500"></span>
+              <span>전략 기획 디렉터</span>
+            </button>
+            <button type="button" onclick="selectStyle('creative')" id="btn-s-creative" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 text-left flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-500"></span>
+              <span>크리에이티브 카피</span>
+            </button>
+            <button type="button" onclick="selectStyle('data')" id="btn-s-data" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 text-left flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-slate-500"></span>
+              <span>데이터 사이언티스트</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Prompt Input Textarea -->
+        <div class="flex-1 flex flex-col gap-2 min-h-[260px]">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span>원래 하려던 질문이나 요청사항 입력</span>
+            <button type="button" onclick="clearInput()" class="hover:text-rose-400 transition-colors">
+              <i class="fa-solid fa-trash-can"></i> 비우기
+            </button>
+          </div>
+          <textarea
+            id="prompt-input"
+            rows="8"
+            placeholder="예시: 'React 웹앱 성능 최적화하는 방법 알려줘', '투자 유치를 위한 콜드메일 작성해줘' 등 간단하게 작성해도 괜찮습니다."
+            class="w-full flex-1 p-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 text-slate-100 placeholder-slate-500 text-sm leading-relaxed resize-y chat-scroll outline-none transition-all"
+          ></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex items-center gap-2 pt-2">
+          <button
+            id="btn-optimize"
+            type="button"
+            onclick="runOptimize()"
+            class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+          >
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span id="btn-optimize-text">고품질 시스템 프롬프트로 변환하기</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Optimized Results -->
+      <section class="flex flex-col gap-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg relative min-h-[380px]">
+        
+        <!-- Header & Action Tools -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-check text-amber-400"></i>
+              최적화된 프롬프트 결과
+            </h3>
+            <span id="target-model-badge" class="hidden px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              ChatGPT & Claude
+            </span>
+          </div>
+
+          <div id="result-actions" class="hidden flex items-center gap-2">
+            <button onclick="copyPrompt()" class="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold flex items-center gap-1 transition-colors shadow-sm cursor-pointer">
+              <i class="fa-regular fa-copy"></i>
+              <span>프롬프트 복사</span>
+            </button>
+            <button onclick="downloadPrompt()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 flex items-center gap-1 transition-colors">
+              <i class="fa-solid fa-download"></i>
+              <span>저장</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-center p-8">
+          <div class="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-slate-500 text-2xl mb-3">
+            <i class="fa-solid fa-terminal"></i>
+          </div>
+          <h4 class="text-base font-semibold text-slate-300">원하는 작업을 입력하고 변환을 시작하세요</h4>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm">
+            모호했던 지시가 역할 정의, 4단계 실행 프로세스, 출력 제약 조건이 명시된 전문 프롬프트 템플릿으로 다시 태어납니다.
+          </p>
+        </div>
+
+        <!-- Loading State Skeleton -->
+        <div id="loading-state" class="hidden flex-1 flex flex-col items-center justify-center text-center p-8 gap-3">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl animate-spin">
+            <i class="fa-solid fa-circle-notch"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-amber-300">프롬프트 아키텍처 구성 중...</h4>
+            <p class="text-xs text-slate-400 mt-1">지시문의 모호성을 제거하고 가변 매개변수를 배치하고 있습니다.</p>
+          </div>
+        </div>
+
+        <!-- Active Result State -->
+        <div id="result-content" class="hidden flex-1 flex flex-col gap-4 overflow-y-auto chat-scroll pr-1">
+          
+          <!-- Improvements List -->
+          <div class="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/30 flex flex-col gap-2">
+            <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-arrow-trend-up"></i> 이번 변환에서 개선된 핵심 포인트:
+            </span>
+            <ul id="improvements-list" class="flex flex-col gap-1.5 text-xs text-slate-300">
+              <!-- Rendered improvements -->
+            </ul>
+          </div>
+
+          <!-- Prompt Box -->
+          <div class="flex-1 flex flex-col gap-2">
+            <div class="flex items-center justify-between text-xs text-slate-400">
+              <span class="font-bold text-slate-300 flex items-center gap-1">
+                <i class="fa-solid fa-code text-amber-400"></i> 완성된 프롬프트 (그대로 복사하여 사용하세요)
+              </span>
+              <span class="text-[11px] text-slate-500">[대괄호] 부분에 본인의 세부 정보를 채워넣으세요</span>
+            </div>
+            <pre
+              id="prompt-output"
+              class="w-full flex-1 p-4 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 text-xs sm:text-sm font-mono leading-relaxed whitespace-pre-wrap select-all overflow-y-auto chat-scroll max-h-[360px]"
+            ></pre>
+          </div>
+
+          <!-- Pro Tip Box -->
+          <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs text-slate-300 flex items-start gap-2.5">
+            <i class="fa-solid fa-lightbulb text-amber-400 mt-0.5 text-sm"></i>
+            <div>
+              <strong class="text-amber-300 font-semibold">실전 활용 꿀팁:</strong>
+              <p id="pro-tip-text" class="text-slate-400 mt-0.5 text-[11.5px] leading-relaxed">
+                -
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-800 text-white border border-slate-700 shadow-2xl text-xs font-medium flex items-center gap-2 transform translate-y-8 opacity-0 pointer-events-none transition-all duration-300">
+    <i class="fa-solid fa-circle-check text-amber-400"></i>
+    <span id="toast-text">알림 메시지</span>
+  </div>
+
+  <script>
+    let currentModel = 'chatgpt';
+    let currentStyle = 'expert';
+    let currentResult = null;
+
+    const SAMPLES = {
+      code: `React 웹 애플리케이션에서 대용량 리스트 렌더링 시 버벅거림이 심해. 렌더링 속도를 60fps로 최적화하고 불필요한 리렌더를 방지하는 실무 코드 패턴을 가르쳐줘.`,
+      coldmail: `B2B SaaS 마케팅 솔루션을 판매하는 스타트업이야. 시리즈 A 투자를 유치한 IT 기업의 마케팅 팀장에게 우리 제품 무료 데모를 제안하는 콜드 메일을 작성해줘. 회신율이 높아야 해.`,
+      strategy: `AI 챗봇을 도입하려는 온라인 이커머스 쇼핑몰의 2026년 고객센터 무인화 및 상담 만족도 향상 프로젝트 기획안을 작성해줘. 투자 대비 효과와 단계별 일정표가 필요해.`
+    };
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-text');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.remove('translate-y-8', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+      setTimeout(() => {
+        toast.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+      }, 3000);
+    }
+
+    function selectModel(model) {
+      currentModel = model;
+      const models = ['chatgpt', 'claude', 'gemini', 'code', 'creative'];
+      models.forEach(m => {
+        const btn = document.getElementById('btn-m-' + m);
+        if (btn) {
+          if (m === model) {
+            btn.className = 'model-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-amber-600/20 text-amber-300 border-amber-500/50 shadow-sm flex flex-col items-center gap-1 text-center';
+          } else {
+            btn.className = 'model-btn px-2 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center gap-1 text-center';
+          }
+        }
+      });
+    }
+
+    function selectStyle(style) {
+      currentStyle = style;
+      const styles = ['expert', 'dev', 'business', 'creative', 'data'];
+      styles.forEach(s => {
+        const btn = document.getElementById('btn-s-' + s);
+        if (btn) {
+          const dot = btn.querySelector('span:first-child');
+          if (s === style) {
+            btn.className = 'style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-amber-600/20 text-amber-300 border-amber-500/50 shadow-sm text-left flex items-center gap-2';
+            if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          } else {
+            btn.className = 'style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 text-left flex items-center gap-2';
+            if (dot) dot.className = 'w-2 h-2 rounded-full bg-slate-500';
+          }
+        }
+      });
+    }
+
+    function applySample(type) {
+      const sample = SAMPLES[type];
+      if (!sample) return;
+      document.getElementById('prompt-input').value = sample;
+      showToast('예시 프롬프트가 입력되었습니다.');
+    }
+
+    function clearInput() {
+      document.getElementById('prompt-input').value = '';
+      document.getElementById('prompt-input').focus();
+    }
+
+    // Client-side fallback optimizer
+    function clientFallbackOptimize(rawPrompt, model, style) {
+      const roleMap = {
+        expert: '각 분야 최고 권위의 15년 차 시니어 전문가 컨설턴트',
+        dev: '대규모 분산 시스템 및 프론트엔드 수석 소프트웨어 아키텍트',
+        business: '비즈니스 전략 기획 및 마케팅 디렉터',
+        creative: '스토리텔링과 흡인력 높은 카피라이팅 전문 크리에이티브 디렉터',
+        data: '데이터 기반 인사이트 도출 및 의사결정을 지원하는 수석 데이터 사이언티스트'
+      };
+      const persona = roleMap[style] || roleMap.expert;
+
+      const modelNames = {
+        chatgpt: 'OpenAI ChatGPT (GPT-4o/o1)',
+        claude: 'Anthropic Claude 3.5 Sonnet',
+        gemini: 'Google Gemini 2.5/3.8 Flash',
+        code: 'Cursor / GitHub Copilot / Dev AI',
+        creative: 'Midjourney / DALL-E / Creative AI'
+      };
+
+      const formatted = `### [Role & Persona]
+당신은 **${persona}**입니다. 실무에서의 풍부한 경험과 전문 지식을 바탕으로 사용자가 요구하는 문제를 가장 명확하고 실질적으로 해결합니다.
+
+### [User Objective & Core Request]
+"${rawPrompt.trim()}"
+
+### [Step-by-Step Instructions]
+1. [핵심 분석]: 사용자가 제시한 상황과 문제의 근본 원인을 파악하고 직관적인 해결 방향을 1~2문장으로 먼저 요약하세요.
+2. [상세 가이드 & 코드]: 실무에서 즉시 복사하여 사용할 수 있는 완성형 코드 또는 단계별 실행 계획(Action Plan)을 마크다운으로 구조화하여 제시하세요.
+3. [제약 사항 준수]:
+   - 기술 스택 및 환경: [사용 중인 프레임워크/버전 명시, 예: React 18, Node.js]
+   - 성능/비용 고려사항: [지연시간 최소화 / 예산 범위]
+4. [주의사항 & 엣지케이스]: 실무 적용 시 흔히 발생하는 실수나 예외 상황과 이를 방지하는 노하우를 마지막에 덧붙여주세요.
+
+### [Output Format]
+- 어조: 친절하고 정중하며 프로페셔널한 한국어 어조
+- 문서 형식: Markdown (단계별 헤더, 글머리 기호, 체크리스트, 주석이 달린 코드 블록)
+- 불필요한 미사여구나 형식적 인삿말은 생략하고 본론부터 시작해주세요.`;
+
+      return {
+        optimizedPrompt: formatted,
+        improvements: [
+          `타겟 모델(${modelNames[model] || model})에 적합한 전문가 페르소나("${persona}") 부여`,
+          '핵심요약 → 실전 가이드 → 제약사항 → 엣지케이스 점검의 4단계 프레임워크 구축',
+          '실무 맞춤형 가변 대괄호([환경], [제약]) 템플릿 추가'
+        ],
+        targetLlm: modelNames[model] || model,
+        recommendedRole: persona,
+        tips: '프롬프트 내의 [대괄호] 부분에 실제 프로젝트 환경이나 목표 수치를 입력할수록 정확도가 급격히 향상됩니다.'
+      };
+    }
+
+    async function runOptimize() {
+      const input = document.getElementById('prompt-input');
+      const text = (input.value || '').trim();
+
+      if (!text) {
+        showToast('최적화할 질문이나 요구사항을 먼저 입력해주세요.');
+        input.focus();
+        return;
+      }
+
+      const emptyState = document.getElementById('empty-state');
+      const loadingState = document.getElementById('loading-state');
+      const resultContent = document.getElementById('result-content');
+      const resultActions = document.getElementById('result-actions');
+      const btnOptimize = document.getElementById('btn-optimize');
+      const btnOptimizeText = document.getElementById('btn-optimize-text');
+
+      emptyState.classList.add('hidden');
+      resultContent.classList.add('hidden');
+      resultActions.classList.add('hidden');
+      loadingState.classList.remove('hidden');
+
+      btnOptimize.disabled = true;
+      btnOptimize.classList.add('opacity-70');
+      btnOptimizeText.textContent = '프롬프트 최적화 분석 중...';
+
+      try {
+        let data = null;
+        try {
+          const res = await fetch('/api/ai/optimize-prompt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt: text,
+              targetLlm: currentModel,
+              style: currentStyle
+            })
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success) {
+              data = json;
+            }
+          }
+        } catch (netErr) {
+          console.warn('Network call failed, switching to local optimizer', netErr);
+        }
+
+        if (!data) {
+          data = clientFallbackOptimize(text, currentModel, currentStyle);
+        }
+
+        currentResult = data;
+        renderResult(data);
+        showToast('프롬프트 최적화가 완료되었습니다! 🎯');
+      } catch (err) {
+        console.error('Optimize error', err);
+        const fallback = clientFallbackOptimize(text, currentModel, currentStyle);
+        currentResult = fallback;
+        renderResult(fallback);
+        showToast('오프라인 엔진으로 최적화가 완료되었습니다.');
+      } finally {
+        loadingState.classList.add('hidden');
+        btnOptimize.disabled = false;
+        btnOptimize.classList.remove('opacity-70');
+        btnOptimizeText.textContent = '고품질 시스템 프롬프트로 변환하기';
+      }
+    }
+
+    function renderResult(data) {
+      const resultContent = document.getElementById('result-content');
+      const resultActions = document.getElementById('result-actions');
+      const promptOutput = document.getElementById('prompt-output');
+      const improvementsList = document.getElementById('improvements-list');
+      const proTipText = document.getElementById('pro-tip-text');
+      const modelBadge = document.getElementById('target-model-badge');
+
+      promptOutput.textContent = data.optimizedPrompt || '';
+
+      improvementsList.innerHTML = (data.improvements || []).map(imp => `
+        <li class="flex items-start gap-2">
+          <i class="fa-solid fa-check text-amber-400 mt-0.5 text-[10px]"></i>
+          <span>${escapeHtml(imp)}</span>
+        </li>
+      `).join('');
+
+      proTipText.textContent = data.tips || '가변 변수에 실제 데이터를 입력하여 원하는 결과를 이끌어내세요.';
+
+      if (data.targetLlm) {
+        modelBadge.textContent = data.targetLlm;
+        modelBadge.classList.remove('hidden');
+      }
+
+      resultContent.classList.remove('hidden');
+      resultActions.classList.remove('hidden');
+    }
+
+    function copyPrompt() {
+      if (!currentResult || !currentResult.optimizedPrompt) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(currentResult.optimizedPrompt).then(() => {
+          showToast('최적화된 프롬프트가 클립보드에 복사되었습니다! 📋');
+        });
+      } else {
+        showToast('클립보드 복사를 지원하지 않는 브라우저입니다.');
+      }
+    }
+
+    function downloadPrompt() {
+      if (!currentResult || !currentResult.optimizedPrompt) return;
+      const md = `# 최적화된 시스템 프롬프트\n\n${currentResult.optimizedPrompt}\n\n---\n*생성: 엔지니 프롬프트 옵티마이저*`;
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `프롬프트최적화_${new Date().toISOString().slice(0,10)}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('프롬프트 파일이 다운로드되었습니다.');
+    }
+
+    function copyShareUrl() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          showToast('페이지 주소가 복사되었습니다! 🔗');
+        });
+      } else {
+        showToast(window.location.href);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

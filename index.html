@@ -24,6 +24,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+      window.onAppRunnerIframeLoaded = function() {};
       tailwind.config = {
         darkMode: 'class',
         theme: {
@@ -107,7 +108,7 @@
       // 반드시 body의 인라인 스크립트보다 먼저 실행되어야 함
       (function checkDataVersion() {
         try {
-          var APP_DATA_VERSION = '2026-09-15-v1789651309960';
+          var APP_DATA_VERSION = '2026-09-15-v1789734160633';
           var storedVersion = localStorage.getItem('app_data_version');
           var savedAvatar = localStorage.getItem('profile_image');
           // 이전 버전이거나 profile.jpg, unsplash 등 이전 기본값이 저장되어 있는 경우 public/face.jpg로 강제 초기화
@@ -846,10 +847,10 @@ Ingenium의 창의와 지혜를 바탕으로
           </button>
           <button
             type="button"
-            onclick="sendQuickMessage('오늘 뭐 먹지 v3 앱은 어떤 기능이 있어?')"
+            onclick="sendQuickMessage('오늘 뭐 먹지 앱은 어떤 기능이 있어?')"
             class="text-[11px] px-2.5 py-1 rounded-full bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white border border-slate-700 hover:border-indigo-500 transition-colors"
           >
-            오늘 뭐 먹지 v3 🍱
+            오늘 뭐 먹지 🍱
           </button>
           <button
             type="button"
@@ -913,13 +914,13 @@ Ingenium의 창의와 지혜를 바탕으로
     </div>
 
     <!-- ==================================================== -->
-    <!-- [미니 웹앱] 오늘 뭐 먹지? v3 모달 (Cloudflare 라이브 & 룰렛) -->
+    <!-- [미니 웹앱] 오늘 뭐 먹지? 모달 (Cloudflare 라이브 & 룰렛) -->
     <!-- ==================================================== -->
     <div
       id="food-app-modal"
       class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none"
       role="dialog"
-      aria-label="오늘 뭐 먹지? v3 웹앱"
+      aria-label="오늘 뭐 먹지? 웹앱"
       onclick="handleFoodModalBackdropClick(event)"
     >
       <div
@@ -934,7 +935,7 @@ Ingenium의 창의와 지혜를 바탕으로
             </div>
             <div>
               <div class="flex flex-wrap items-center gap-2">
-                <h3 id="food-modal-title" class="text-base sm:text-lg font-bold text-white">오늘 뭐 먹지? v3</h3>
+                <h3 id="food-modal-title" class="text-base sm:text-lg font-bold text-white">오늘 뭐 먹지?</h3>
                 <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">동일 코드 실행 엔진</span>
                 <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-orange-500/15 text-orange-300 border border-orange-500/30">Cloudflare Pages</span>
               </div>
@@ -990,9 +991,9 @@ Ingenium의 창의와 지혜를 바탕으로
           <!-- App Header -->
           <div class="text-center py-2 px-3 bg-gradient-to-b from-indigo-950/40 to-slate-950/60 rounded-2xl border border-indigo-500/20">
             <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/15 text-orange-300 border border-orange-500/30 mb-1">
-              ✨ 오늘 점심·저녁 고민 해결 · v3.0
+              ✨ 오늘 점심·저녁 고민 해결
             </span>
-            <h4 id="eatzy-main-title" class="text-xl sm:text-2xl font-black text-white tracking-tight">오늘 뭐 먹지? v3</h4>
+            <h4 id="eatzy-main-title" class="text-xl sm:text-2xl font-black text-white tracking-tight">오늘 뭐 먹지?</h4>
             <p class="text-xs sm:text-sm text-slate-300 mt-0.5">두 가지 질문만 고르면 딱 맞는 메뉴를 찾아드려요!</p>
           </div>
 
@@ -1240,7 +1241,7 @@ Ingenium의 창의와 지혜를 바탕으로
               id="food-live-iframe"
               src="https://eatzy.pages.dev/"
               class="w-full h-[460px] sm:h-[520px] bg-slate-950 border-0"
-              title="오늘 뭐 먹지 v3 라이브 웹앱"
+              title="오늘 뭐 먹지 라이브 웹앱"
               loading="lazy"
               allow="geolocation; clipboard-write"
             ></iframe>
@@ -1296,9 +1297,6 @@ Ingenium의 창의와 지혜를 바탕으로
             <div>
               <div class="flex flex-wrap items-center gap-2">
                 <h3 id="trekking-modal-title" class="text-base sm:text-lg font-bold text-white">구글 맵 기반 트레킹 플래너</h3>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live 정식 배포
-                </span>
                 <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   <i class="fa-solid fa-map text-[9px]"></i> Google Maps Platform
                 </span>
@@ -1666,6 +1664,93 @@ Ingenium의 창의와 지혜를 바탕으로
               <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
             </a>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- [웹앱 러너] 라이브 미니 웹앱 실행 모달             -->
+    <!-- ==================================================== -->
+    <div
+      id="app-runner-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none"
+      role="dialog"
+      aria-label="웹앱 실행 모달"
+      onclick="handleAppRunnerBackdropClick(event)"
+    >
+      <div
+        id="app-runner-modal-box"
+        class="relative w-full max-w-6xl bg-slate-900 border border-indigo-500/40 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl shadow-indigo-950/80 flex flex-col gap-4 transform scale-95 transition-transform duration-300 max-h-[96vh] h-[92vh]"
+      >
+        <!-- Top Bar -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <div id="app-runner-icon" class="w-10 h-10 rounded-xl bg-indigo-600/30 text-indigo-400 flex items-center justify-center text-lg border border-indigo-500/30 shadow-sm">
+              <i class="fa-solid fa-cube"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 id="app-runner-title" class="text-base sm:text-lg font-bold text-white tracking-tight">
+                  웹앱 실행기
+                </h3>
+                <span id="app-runner-badge" class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>
+                  Live 실행 중
+                </span>
+              </div>
+              <p id="app-runner-subtitle" class="text-xs text-slate-400 mt-0.5 hidden sm:block">
+                미니홈피 내에서 바로 조작하거나 상단 우측 버튼으로 새 창에서 전체 화면으로 실행할 수 있습니다.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              onclick="reloadAppRunnerIframe()"
+              class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors cursor-pointer"
+              title="앱 새로고침"
+            >
+              <i class="fa-solid fa-rotate-right text-[11px]"></i>
+              <span class="hidden sm:inline">새로고침</span>
+            </button>
+            <a
+              id="app-runner-external-link"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
+              title="새 창에서 전체 화면으로 열기"
+            >
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              <span class="hidden sm:inline">새 탭 전체화면</span>
+            </a>
+            <button
+              type="button"
+              onclick="closeAppRunnerModal()"
+              class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-rose-900/60 text-slate-400 hover:text-rose-300 flex items-center justify-center text-sm border border-slate-700 transition-colors cursor-pointer ml-1"
+              aria-label="닫기"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Iframe container -->
+        <div class="relative flex-1 w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-inner">
+          <div id="app-runner-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 z-10 transition-opacity duration-300">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-lg animate-spin mb-3">
+              <i class="fa-solid fa-circle-notch"></i>
+            </div>
+            <span class="text-xs text-slate-300 font-medium">웹앱 로딩 중...</span>
+          </div>
+          <iframe
+            id="app-runner-iframe"
+            src="about:blank"
+            title="웹앱 실행 프레임"
+            class="w-full h-full border-0 bg-slate-950"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-downloads allow-modals"
+          ></iframe>
         </div>
       </div>
     </div>
@@ -2060,8 +2145,8 @@ Ingenium의 창의와 지혜를 바탕으로
             >
           </div>
 
-          <!-- 상태 배지 & 아이콘 선택 -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- 상태 배지, 아이콘, 테마 색상 선택 -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label for="webapp-badge-input" class="block text-xs font-semibold text-slate-300 mb-1.5">
                 상태 배지
@@ -2069,26 +2154,43 @@ Ingenium의 창의와 지혜를 바탕으로
               <input
                 type="text"
                 id="webapp-badge-input"
-                placeholder="예: Live v3.0 배포, 개발 중 (80%)"
+                placeholder="예: Live v3.0 배포"
                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               >
             </div>
             <div>
               <label for="webapp-icon-input" class="block text-xs font-semibold text-slate-300 mb-1.5">
-                대표 아이콘 (FontAwesome)
+                대표 아이콘
               </label>
               <select
                 id="webapp-icon-input"
                 class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               >
                 <option value="fa-solid fa-utensils">음식 / 식기 (fa-utensils)</option>
-                <option value="fa-solid fa-wand-magic-sparkles">AI / 마법봉 (fa-wand-magic-sparkles)</option>
+                <option value="fa-solid fa-map-location-dot">트레킹 / 지도 (fa-map-location-dot)</option>
+                <option value="fa-solid fa-wand-magic-sparkles">AI / 요약 (fa-wand-magic-sparkles)</option>
                 <option value="fa-solid fa-clock-rotate-left">타이머 / 시계 (fa-clock-rotate-left)</option>
-                <option value="fa-solid fa-sliders">슬라이더 / 설정 (fa-sliders)</option>
+                <option value="fa-solid fa-sliders">슬라이더 / 프롬프트 (fa-sliders)</option>
                 <option value="fa-solid fa-robot">로봇 / 챗봇 (fa-robot)</option>
                 <option value="fa-solid fa-code">코드 / 개발 (fa-code)</option>
                 <option value="fa-solid fa-chart-line">차트 / 통계 (fa-chart-line)</option>
                 <option value="fa-solid fa-gamepad">게임 / 인터랙션 (fa-gamepad)</option>
+              </select>
+            </div>
+            <div>
+              <label for="webapp-color-input" class="block text-xs font-semibold text-slate-300 mb-1.5">
+                아이콘 & 테마 색상
+              </label>
+              <select
+                id="webapp-color-input"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+              >
+                <option value="orange">주황 (오늘 뭐 먹지? / 음식)</option>
+                <option value="emerald">에메랄드 (트레킹 / 자연)</option>
+                <option value="purple">바이올렛 (AI 요약 / 스마트)</option>
+                <option value="rose">로즈 (집중노트 / 타이머)</option>
+                <option value="cyan">사이언 (프롬프트 / 테크)</option>
+                <option value="indigo">인디고 (기본 블루)</option>
               </select>
             </div>
           </div>
@@ -2847,7 +2949,7 @@ Ingenium의 창의와 지혜를 바탕으로
       // ----------------------------------------------------
       // Feature Configuration (발자국 남기기 기능 관리자 설정: 당분간 일시 중지)
       // ----------------------------------------------------
-      const DEFAULT_CHEER_FEATURE_ENABLED = false;
+      const DEFAULT_CHEER_FEATURE_ENABLED = true;
       const CHEER_FEATURE_STORAGE_KEY = 'site_cheer_feature_enabled_v3';
 
       function isCheerFeatureEnabled() {
@@ -4982,87 +5084,97 @@ Ingenium의 창의와 지혜를 바탕으로
       // 2-2. Dynamic Webapp Gallery & Title Management (Local Storage & CRUD)
       // ----------------------------------------------------
       const DEFAULT_WEBAPPS = [
-  {
-    "id": "webapp-eatzy-v3",
-    "title": "오늘 뭐 먹지? 3.0",
-    "badge": "Live v3.0 배포",
-    "badgeColor": "emerald",
-    "icon": "fa-solid fa-utensils",
-    "desc": "Google AI Studio로 기획·개발하여 Cloudflare Pages에 정식 배포된 스마트 메뉴 추천 웹앱입니다.\n2단계 맞춤 취향 질문(매콤/담백, 밥/면·빵)과 실제 메뉴 사진, 꿀팁, 근처 맛집 찾기를 지원합니다.",
-    "url": "https://eatzy.pages.dev/",
-    "tags": [
-      "GoogleAIStudio",
-      "CloudflarePages",
-      "eatzy.pages.dev",
-      "음식추천"
-    ],
-    "isFeatured": true,
-    "isLive": true
-  },
-  {
-    "id": "webapp-wherewego",
-    "title": "구글 맵 기반 트레킹 플래너",
-    "badge": "Live 정식 배포",
-    "badgeColor": "emerald",
-    "icon": "fa-solid fa-map-location-dot",
-    "desc": "구글 맵(Google Maps)을 기반으로 맞춤 트레킹 코스와 하이킹 일정을 스마트하게 계획하고 탐색할 수 있는 반응형 웹 애플리케이션입니다.\n경로 플래닝, 코스 거리 및 고도 확인, 주변 명소 탐색 기능을 지원합니다.",
-    "url": "https://wherewego.pages.dev/",
-    "tags": [
-      "GoogleMaps",
-      "CloudflarePages",
-      "Trekking",
-      "wherewego.pages.dev"
-    ],
-    "isFeatured": true,
-    "isLive": true
-  },
-  {
-    "id": "webapp-ai-summary",
-    "title": "AI 스마트 텍스트 요약기",
-    "badge": "개발 중 (80%)",
-    "badgeColor": "emerald",
-    "icon": "fa-solid fa-wand-magic-sparkles",
-    "desc": "긴 블로그 아티클이나 보고서를 핵심 3줄 불릿포인트로 신속하게 요약해주는 미니 웹앱.",
-    "url": "",
-    "tags": [
-      "AI",
-      "NLP",
-      "Utility"
-    ],
-    "isFeatured": false,
-    "isLive": false
-  },
-  {
-    "id": "webapp-pomodoro",
-    "title": "포모도로 & 미니 메모장",
-    "badge": "기획 완료",
-    "badgeColor": "indigo",
-    "icon": "fa-solid fa-clock-rotate-left",
-    "desc": "25분 집중 인터벌과 즉시 휘발/저장 가능한 퀵 마크다운 노트를 지원하는 생산성 타이머.",
-    "url": "",
-    "tags": [
-      "Timer",
-      "Productivity"
-    ],
-    "isFeatured": false,
-    "isLive": false
-  },
-  {
-    "id": "webapp-prompt-optimizer",
-    "title": "프롬프트 옵티마이저",
-    "badge": "프로토타입",
-    "badgeColor": "amber",
-    "icon": "fa-solid fa-sliders",
-    "desc": "모호한 요구사항을 입력하면 고품질 결과물을 유도하는 정교한 시스템 프롬프트로 변환.",
-    "url": "",
-    "tags": [
-      "Prompt",
-      "LLM"
-    ],
-    "isFeatured": false,
-    "isLive": false
-  }
-];
+        {
+          id: "webapp-eatzy-v3",
+          title: "오늘 뭐 먹지?",
+          badge: "",
+          badgeColor: "orange",
+          themeColor: "orange",
+          icon: "fa-solid fa-utensils",
+          desc: "Google AI Studio로 기획·개발하여 Cloudflare Pages에 정식 배포된 스마트 메뉴 추천 웹앱.\n2단계 맞춤 취향 질문(매콤/담백, 밥/면·빵)과 실제 메뉴 사진, 꿀팁, 근처 맛집 찾기를 지원합니다.",
+          url: "https://eatzy.pages.dev/",
+          tags: [
+            "GoogleAIStudio",
+            "CloudflarePages",
+            "eatzy.pages.dev",
+            "음식추천"
+          ],
+          isFeatured: false,
+          isLive: true
+        },
+        {
+          id: "webapp-wherewego",
+          title: "구글 맵 기반 트레킹 플래너",
+          badge: "",
+          badgeColor: "emerald",
+          themeColor: "emerald",
+          icon: "fa-solid fa-map-location-dot",
+          desc: "구글 맵(Google Maps Platform)을 기반으로 맞춤 트레킹 코스와 하이킹 일정을 스마트하게 계획하고 탐색할 수 있는 반응형 웹 애플리케이션.\n경로 플래닝, 코스 거리 및 고도 확인, 주변 명소 탐색 기능을 지원합니다.",
+          url: "https://wherewego.pages.dev/",
+          tags: [
+            "GoogleMaps",
+            "CloudflarePages",
+            "Trekking",
+            "wherewego.pages.dev"
+          ],
+          isFeatured: false,
+          isLive: true
+        },
+        {
+          id: "webapp-ai-summary",
+          title: "AI 스마트 텍스트 요약기",
+          badge: "",
+          badgeColor: "purple",
+          themeColor: "purple",
+          icon: "fa-solid fa-wand-magic-sparkles",
+          desc: "긴 블로그 아티클이나 보고서를 핵심 3줄 불릿포인트 및 키워드로 신속하게 요약해주는 스마트 웹앱.\nGemini AI 기반 심층 요약 및 오프라인 규칙 요약을 지원합니다.",
+          url: "/apps/ai-summary/",
+          tags: [
+            "AI",
+            "NLP",
+            "TextSummary",
+            "Gemini"
+          ],
+          isFeatured: false,
+          isLive: true
+        },
+        {
+          id: "webapp-pomodoro",
+          title: "집중노트",
+          badge: "",
+          badgeColor: "rose",
+          themeColor: "rose",
+          icon: "fa-solid fa-clock-rotate-left",
+          desc: "25분 집중 인터벌과 즉시 자동저장되는 퀵 마크다운 노트를 지원하는 생산성 타이머 & 메모 웹앱.\n원형 카운트다운 링, 사운드 알림, 집중 할 일 체크리스트를 지원합니다.",
+          url: "/apps/pomodoro/",
+          tags: [
+            "Timer",
+            "Pomodoro",
+            "Notepad",
+            "Productivity"
+          ],
+          isFeatured: false,
+          isLive: true
+        },
+        {
+          id: "webapp-prompt-optimizer",
+          title: "프롬프트 옵티마이저",
+          badge: "",
+          badgeColor: "cyan",
+          themeColor: "cyan",
+          icon: "fa-solid fa-sliders",
+          desc: "모호한 요구사항을 입력하면 ChatGPT, Claude, Gemini에서 최고 품질의 결과를 유도하는 정교한 시스템 프롬프트로 변환해주는 AI 엔지니어링 도구.",
+          url: "/apps/prompt-optimizer/",
+          tags: [
+            "Prompt",
+            "LLM",
+            "PromptEngineering",
+            "AI"
+          ],
+          isFeatured: false,
+          isLive: true
+        }
+      ];
 
       function loadWebapps() {
         try {
@@ -5070,7 +5182,19 @@ Ingenium의 창의와 지혜를 바탕으로
           if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) {
-              // Ensure newly added default apps (like wherewego) are merged if missing and updated to featured
+              // Ensure default apps have isFeatured: false and proper titles and themes
+              const eatzyItem = parsed.find(w => w.id === 'webapp-eatzy-v3' || (w.url && w.url.includes('eatzy.pages.dev')));
+              if (eatzyItem) {
+                eatzyItem.title = '오늘 뭐 먹지?';
+                eatzyItem.badge = '';
+                eatzyItem.isFeatured = false;
+                eatzyItem.isLive = true;
+                eatzyItem.badgeColor = 'orange';
+                eatzyItem.themeColor = 'orange';
+                eatzyItem.icon = eatzyItem.icon || 'fa-solid fa-utensils';
+                if (!eatzyItem.url) eatzyItem.url = 'https://eatzy.pages.dev/';
+              }
+
               let wherewegoItem = parsed.find(w => w.id === 'webapp-wherewego' || (w.url && w.url.includes('wherewego.pages.dev')));
               if (!wherewegoItem) {
                 const defaultWherewego = DEFAULT_WEBAPPS.find(w => w.id === 'webapp-wherewego');
@@ -5080,10 +5204,54 @@ Ingenium의 창의와 지혜를 바탕으로
                 }
               }
               if (wherewegoItem) {
-                wherewegoItem.isFeatured = true;
+                wherewegoItem.title = '구글 맵 기반 트레킹 플래너';
+                wherewegoItem.badge = '';
+                wherewegoItem.isFeatured = false;
                 wherewegoItem.isLive = true;
+                wherewegoItem.badgeColor = 'emerald';
+                wherewegoItem.themeColor = 'emerald';
+                wherewegoItem.icon = wherewegoItem.icon || 'fa-solid fa-map-location-dot';
                 if (!wherewegoItem.url) wherewegoItem.url = 'https://wherewego.pages.dev/';
               }
+
+              // Update & link the 3 newly built webapps to ensure live status
+              const summaryApp = parsed.find(w => w.id === 'webapp-ai-summary');
+              if (summaryApp) {
+                summaryApp.isFeatured = false;
+                summaryApp.isLive = true;
+                summaryApp.badge = '';
+                summaryApp.badgeColor = 'purple';
+                summaryApp.themeColor = 'purple';
+                summaryApp.url = '/apps/ai-summary/';
+              }
+              const pomodoroApp = parsed.find(w => w.id === 'webapp-pomodoro');
+              if (pomodoroApp) {
+                pomodoroApp.title = '집중노트';
+                pomodoroApp.isFeatured = false;
+                pomodoroApp.isLive = true;
+                pomodoroApp.badge = '';
+                pomodoroApp.badgeColor = 'rose';
+                pomodoroApp.themeColor = 'rose';
+                pomodoroApp.url = '/apps/pomodoro/';
+              }
+              const promptApp = parsed.find(w => w.id === 'webapp-prompt-optimizer');
+              if (promptApp) {
+                promptApp.isFeatured = false;
+                promptApp.isLive = true;
+                promptApp.badge = '';
+                promptApp.badgeColor = 'cyan';
+                promptApp.themeColor = 'cyan';
+                promptApp.url = '/apps/prompt-optimizer/';
+              }
+
+              // Ensure all items are not featured so all cards are uniformly small like 집중노트
+              parsed.forEach(w => {
+                w.isFeatured = false;
+                if (w.badge === 'Live 정식 배포' || w.badge === 'Live v3.0 배포' || w.badge === 'Live 배포') {
+                  w.badge = '';
+                }
+              });
+
               try {
                 localStorage.setItem('profile_webapps', JSON.stringify(parsed));
               } catch (e) {}
@@ -5112,7 +5280,7 @@ Ingenium의 창의와 지혜를 바탕으로
 
       function getFoodAppTitle() {
         const item = webappList.find(w => w.id === 'webapp-eatzy-v3');
-        return item ? item.title : '오늘 뭐 먹지? v3';
+        return item ? item.title : '오늘 뭐 먹지?';
       }
 
       function syncFoodAppTitle() {
@@ -5123,11 +5291,112 @@ Ingenium의 창의와 지혜를 바탕으로
         if (mainTitleEl) mainTitleEl.textContent = title;
       }
 
+      function getAppTheme(app) {
+        const color = (app.themeColor || app.badgeColor || '').toLowerCase();
+        const id = (app.id || '').toLowerCase();
+        const title = (app.title || '').toLowerCase();
+        const icon = (app.icon || '').toLowerCase();
+
+        let key = 'indigo';
+        if (color === 'orange' || color === 'amber' || id.includes('eatzy') || title.includes('먹지') || title.includes('food') || icon.includes('utensils')) {
+          key = 'orange';
+        } else if (color === 'emerald' || color === 'teal' || color === 'green' || id.includes('wherewego') || title.includes('트레킹') || title.includes('trekking') || icon.includes('map') || icon.includes('mountain')) {
+          key = 'emerald';
+        } else if (color === 'purple' || color === 'violet' || id.includes('ai-summary') || title.includes('요약') || title.includes('summary') || icon.includes('wand')) {
+          key = 'purple';
+        } else if (color === 'rose' || color === 'red' || color === 'coral' || id.includes('pomodoro') || title.includes('집중노트') || title.includes('포모도로') || icon.includes('clock') || icon.includes('stopwatch')) {
+          key = 'rose';
+        } else if (color === 'cyan' || color === 'sky' || color === 'blue' || id.includes('prompt') || title.includes('프롬프트') || icon.includes('sliders')) {
+          key = 'cyan';
+        }
+
+        switch (key) {
+          case 'orange':
+            return {
+              key: 'orange',
+              iconBox: 'bg-orange-500/20',
+              iconText: 'text-orange-400',
+              iconBorder: 'border-orange-500/35',
+              cardHoverBorder: 'hover:border-orange-500/50',
+              titleHover: 'group-hover:text-orange-300',
+              btnBg: 'bg-orange-600 hover:bg-orange-500 shadow-orange-600/20',
+              tagText: 'text-orange-300/80',
+              badgeBg: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
+              pingDot: 'bg-orange-400'
+            };
+          case 'emerald':
+            return {
+              key: 'emerald',
+              iconBox: 'bg-emerald-500/20',
+              iconText: 'text-emerald-400',
+              iconBorder: 'border-emerald-500/35',
+              cardHoverBorder: 'hover:border-emerald-500/50',
+              titleHover: 'group-hover:text-emerald-300',
+              btnBg: 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20',
+              tagText: 'text-emerald-300/80',
+              badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+              pingDot: 'bg-emerald-400'
+            };
+          case 'purple':
+            return {
+              key: 'purple',
+              iconBox: 'bg-purple-500/20',
+              iconText: 'text-purple-400',
+              iconBorder: 'border-purple-500/35',
+              cardHoverBorder: 'hover:border-purple-500/50',
+              titleHover: 'group-hover:text-purple-300',
+              btnBg: 'bg-purple-600 hover:bg-purple-500 shadow-purple-600/20',
+              tagText: 'text-purple-300/80',
+              badgeBg: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+              pingDot: 'bg-purple-400'
+            };
+          case 'rose':
+            return {
+              key: 'rose',
+              iconBox: 'bg-rose-500/20',
+              iconText: 'text-rose-400',
+              iconBorder: 'border-rose-500/35',
+              cardHoverBorder: 'hover:border-rose-500/50',
+              titleHover: 'group-hover:text-rose-300',
+              btnBg: 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/20',
+              tagText: 'text-rose-300/80',
+              badgeBg: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+              pingDot: 'bg-rose-400'
+            };
+          case 'cyan':
+            return {
+              key: 'cyan',
+              iconBox: 'bg-cyan-500/20',
+              iconText: 'text-cyan-400',
+              iconBorder: 'border-cyan-500/35',
+              cardHoverBorder: 'hover:border-cyan-500/50',
+              titleHover: 'group-hover:text-cyan-300',
+              btnBg: 'bg-cyan-600 hover:bg-cyan-500 shadow-cyan-600/20',
+              tagText: 'text-cyan-300/80',
+              badgeBg: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+              pingDot: 'bg-cyan-400'
+            };
+          default:
+            return {
+              key: 'indigo',
+              iconBox: 'bg-indigo-500/20',
+              iconText: 'text-indigo-400',
+              iconBorder: 'border-indigo-500/35',
+              cardHoverBorder: 'hover:border-indigo-500/50',
+              titleHover: 'group-hover:text-indigo-300',
+              btnBg: 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/20',
+              tagText: 'text-indigo-300/80',
+              badgeBg: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+              pingDot: 'bg-indigo-400'
+            };
+        }
+      }
+
       function renderWebapps() {
         const container = document.getElementById('webapps-grid-container');
         if (!container) return;
 
-        const liveCount = webappList.filter(w => w.isLive).length;
+        const liveCount = webappList.filter(w => w.isLive || (w.url && w.url.trim() !== '')).length;
         const prepCount = webappList.length - liveCount;
         const countText = document.getElementById('webapps-count-text');
         if (countText) {
@@ -5135,298 +5404,102 @@ Ingenium의 창의와 지혜를 바탕으로
         }
 
         container.innerHTML = webappList.map((app) => {
-          if (app.isFeatured) {
-            const isTrekking = app.id === 'webapp-wherewego' || (app.url && app.url.includes('wherewego.pages.dev'));
+          const isLiveApp = app.isLive || (app.url && app.url.trim() !== '');
+          const theme = getAppTheme(app);
 
-            if (isTrekking) {
-              return `
-              <div class="sm:col-span-2 group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-emerald-950/60 via-slate-900/95 to-slate-900/95 border-2 border-emerald-500/60 hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between shadow-xl shadow-emerald-950/50 hover:shadow-emerald-600/25">
-                <!-- Card Header -->
-                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-                  <div class="flex items-start gap-3.5 sm:gap-4 flex-1">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-600 text-white flex items-center justify-center text-xl shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
-                      <i class="${escapeHtml(app.icon || 'fa-solid fa-map-location-dot')}"></i>
-                    </div>
-                    <div class="flex-1">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-emerald-300 transition-colors">
-                          ${escapeHtml(app.title)}
-                        </h3>
-                        ${app.badge ? `
-                          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                            ${escapeHtml(app.badge)}
-                          </span>` : ''}
-                        <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                          <i class="fa-solid fa-map text-[10px]"></i> Google Maps Platform
-                        </span>
-                        <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/15 text-orange-300 border border-orange-500/30 flex items-center gap-1">
-                          <i class="fa-solid fa-cloud text-[10px]"></i> Cloudflare Pages
-                        </span>
-                        <!-- Edit Title Button -->
-                        <button
-                          type="button"
-                          onclick="openWebappModal('${escapeHtml(app.id)}')"
-                          class="admin-only px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 flex items-center gap-1 transition-colors cursor-pointer ml-auto"
-                          title="웹앱 타이틀 및 상세 정보 수정"
-                        >
-                          <i class="fa-solid fa-pen text-[10px]"></i>
-                          <span>수정</span>
-                        </button>
-                      </div>
-                      <p class="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed whitespace-pre-line">
-                        ${escapeHtml(app.desc)}
-                      </p>
-
-                      <!-- Deploy URL Notice Box -->
-                      ${app.url ? `
-                        <div class="mt-3 inline-flex flex-wrap items-center gap-2 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-emerald-500/30 text-xs">
-                          <span class="text-slate-400 flex items-center gap-1 font-medium">
-                            <i class="fa-solid fa-globe text-emerald-400"></i> 배포 URL:
-                          </span>
-                          <a
-                            href="${escapeHtml(app.url)}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="font-mono text-emerald-300 hover:text-white underline flex items-center gap-1 font-semibold transition-colors"
-                          >
-                            ${escapeHtml(app.url)}
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                          </a>
-                        </div>` : ''}
-                    </div>
-                  </div>
-
-                  <!-- Action Buttons -->
-                  <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 self-stretch sm:self-center">
-                    ${app.url ? `
-                      <a
-                        href="${escapeHtml(app.url)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 active:scale-95 transition-all whitespace-nowrap cursor-pointer"
-                      >
-                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                        <span>배포 사이트 새 창</span>
-                      </a>` : ''}
-                    <button
-                      type="button"
-                      onclick="openTrekkingAppModal('live')"
-                      class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 active:scale-95 transition-all whitespace-nowrap cursor-pointer"
-                    >
-                      <i class="fa-solid fa-map-location-dot text-xs"></i>
-                      <span>홈페이지 내 실행 (라이브 플래너)</span>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Footer tags & quick actions -->
-                <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    ${(app.tags || []).map(t => `<span class="px-2 py-0.5 rounded bg-slate-800/90 text-emerald-300 border border-slate-700/80">#${escapeHtml(t)}</span>`).join('')}
-                  </div>
+          return `
+            <div class="group relative p-5 rounded-2xl bg-slate-900/85 border border-slate-800 ${theme.cardHoverBorder} transition-all duration-300 flex flex-col justify-between hover:shadow-xl hover:shadow-${theme.key}-600/10">
+              <div>
+                <!-- Header: Icon on the left of title with theme color -->
+                <div class="flex items-start justify-between gap-3 mb-2.5">
                   <div class="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onclick="openTrekkingAppModal('presets')"
-                      class="text-slate-400 hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors cursor-pointer"
-                    >
-                      인기 코스 가이드 & 프리셋 <i class="fa-solid fa-mountain-sun text-[11px]"></i>
-                    </button>
-                    <button
-                      type="button"
-                      onclick="openTrekkingAppModal('live')"
-                      class="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                    >
-                      Cloudflare 라이브 보기 <i class="fa-solid fa-globe text-[11px]"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              `;
-            }
-
-            return `
-              <div class="sm:col-span-2 group relative p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-slate-900/95 to-slate-900/95 border-2 border-indigo-500/60 hover:border-indigo-400 transition-all duration-300 flex flex-col justify-between shadow-xl shadow-indigo-950/50 hover:shadow-indigo-600/25">
-                <!-- Card Header -->
-                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
-                  <div class="flex items-start gap-3.5 sm:gap-4 flex-1">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-orange-500 via-amber-500 to-indigo-600 text-white flex items-center justify-center text-xl shadow-lg shadow-orange-500/30 group-hover:scale-105 transition-transform flex-shrink-0">
-                      <i class="${escapeHtml(app.icon || 'fa-solid fa-utensils')}"></i>
+                    <div class="w-10 h-10 rounded-xl ${theme.iconBox} ${theme.iconText} flex items-center justify-center border ${theme.iconBorder} group-hover:scale-105 transition-transform flex-shrink-0 shadow-sm">
+                      <i class="${escapeHtml(app.icon || 'fa-solid fa-cube')} text-base"></i>
                     </div>
-                    <div class="flex-1">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-indigo-300 transition-colors">
-                          ${escapeHtml(app.title)}
-                        </h3>
-                        ${app.badge ? `
-                          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                            ${escapeHtml(app.badge)}
-                          </span>` : ''}
-                        <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-orange-500/15 text-orange-300 border border-orange-500/30 flex items-center gap-1">
-                          <i class="fa-solid fa-cloud text-[10px]"></i> Cloudflare Pages
+                    <div>
+                      <h3 class="text-base font-bold text-white ${theme.titleHover} transition-colors line-clamp-1">
+                        ${escapeHtml(app.title)}
+                      </h3>
+                      ${app.badge && app.badge.trim() !== '' ? `
+                      <div class="flex items-center gap-1.5 mt-0.5">
+                        <span class="px-2 py-0.5 rounded text-[10.5px] font-semibold border flex items-center ${theme.badgeBg}">
+                          ${isLiveApp ? `<span class="w-1.5 h-1.5 rounded-full ${theme.pingDot} animate-pulse mr-1"></span>` : ''}
+                          ${escapeHtml(app.badge)}
                         </span>
-                        <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 flex items-center gap-1">
-                          <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> Google AI Studio 개발
-                        </span>
-                        <!-- Edit Title Button -->
-                        <button
-                          type="button"
-                          onclick="openWebappModal('${escapeHtml(app.id)}')"
-                          class="admin-only px-2 py-0.5 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 flex items-center gap-1 transition-colors cursor-pointer ml-auto"
-                          title="웹앱 타이틀 및 상세 정보 수정"
-                        >
-                          <i class="fa-solid fa-pen text-[10px]"></i>
-                          <span>수정</span>
-                        </button>
                       </div>
-                      <p class="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed whitespace-pre-line">
-                        ${escapeHtml(app.desc)}
-                      </p>
-
-                      <!-- Deploy URL Notice Box -->
-                      ${app.url ? `
-                        <div class="mt-3 inline-flex flex-wrap items-center gap-2 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-indigo-500/30 text-xs">
-                          <span class="text-slate-400 flex items-center gap-1 font-medium">
-                            <i class="fa-solid fa-globe text-orange-400"></i> 배포 URL:
-                          </span>
-                          <a
-                            href="${escapeHtml(app.url)}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="font-mono text-indigo-300 hover:text-white underline flex items-center gap-1 font-semibold transition-colors"
-                          >
-                            ${escapeHtml(app.url)}
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                          </a>
-                        </div>` : ''}
+                      ` : ''}
                     </div>
                   </div>
 
-                  <!-- Action Buttons -->
-                  <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 self-stretch sm:self-center">
-                    ${app.url ? `
-                      <a
-                        href="${escapeHtml(app.url)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30 active:scale-95 transition-all whitespace-nowrap cursor-pointer"
-                      >
-                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                        <span>배포 사이트 새 창</span>
-                      </a>` : ''}
-                    <button
-                      type="button"
-                      onclick="openFoodAppModal('native')"
-                      class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all whitespace-nowrap cursor-pointer"
-                    >
-                      <i class="fa-solid fa-play text-xs"></i>
-                      <span>홈페이지 내 실행 (동일 코드)</span>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Footer tags & quick actions -->
-                <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    ${(app.tags || []).map(t => `<span class="px-2 py-0.5 rounded bg-slate-800/90 text-indigo-300 border border-slate-700/80">#${escapeHtml(t)}</span>`).join('')}
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onclick="openFoodAppModal('native')"
-                      class="text-slate-400 hover:text-indigo-300 font-medium flex items-center gap-1 transition-colors cursor-pointer"
-                    >
-                      동일 코드 즉시 추천 <i class="fa-solid fa-utensils text-[11px]"></i>
-                    </button>
-                    <button
-                      type="button"
-                      onclick="openFoodAppModal('live')"
-                      class="text-orange-400 hover:text-orange-300 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                    >
-                      Cloudflare 라이브 보기 <i class="fa-solid fa-globe text-[11px]"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `;
-          } else {
-            const isLiveApp = app.isLive || (app.url && app.url.trim() !== '');
-            const badgeColorClass = isLiveApp || app.badgeColor === 'emerald'
-              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-              : (app.badgeColor === 'amber'
-                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20');
-
-            const iconColorClass = isLiveApp || app.badgeColor === 'emerald'
-              ? 'bg-emerald-600/20 text-emerald-400 border-emerald-500/30'
-              : 'bg-indigo-600/20 text-indigo-400 border-indigo-500/30';
-
-            return `
-              <div class="group relative p-5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-indigo-500/50 transition-all duration-300 flex flex-col justify-between hover:shadow-lg hover:shadow-indigo-600/10">
-                <div>
-                  <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 rounded-lg ${iconColorClass} flex items-center justify-center border group-hover:scale-105 transition-transform">
-                      <i class="${escapeHtml(app.icon || 'fa-solid fa-cube')}"></i>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                      <span class="px-2.5 py-0.5 rounded text-[11px] font-semibold border flex items-center ${badgeColorClass}">
-                        ${isLiveApp ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span>' : ''}
-                        ${escapeHtml(app.badge || (isLiveApp ? 'Live 배포' : '준비 중'))}
-                      </span>
-                      <button
-                        type="button"
-                        onclick="openWebappModal('${escapeHtml(app.id)}')"
-                        class="admin-only w-7 h-7 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
-                        title="웹앱 타이틀 및 정보 수정"
-                      >
-                        <i class="fa-solid fa-pen text-[10px]"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <h3 class="text-base font-semibold text-white group-hover:text-indigo-300 transition-colors">
-                    ${escapeHtml(app.title)}
-                  </h3>
-                  <p class="text-xs text-slate-400 mt-1.5 leading-relaxed whitespace-pre-line">
-                    ${escapeHtml(app.desc)}
-                  </p>
-
-                  ${app.url ? `
-                  <div class="mt-3.5 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-                    <a
-                      href="${escapeHtml(app.url)}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-emerald-600/20 active:scale-95 transition-all cursor-pointer"
-                    >
-                      <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                      <span>배포 사이트 열기</span>
-                    </a>
-                    <span class="font-mono text-[10.5px] text-slate-400 truncate max-w-[150px]" title="${escapeHtml(app.url)}">
-                      ${escapeHtml(app.url.replace(/^https?:\/\//, ''))}
-                    </span>
-                  </div>
-                  ` : ''}
-                </div>
-                <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                  <span class="truncate max-w-[200px]">
-                    ${(app.tags || []).map(t => `#${escapeHtml(t)}`).join(' ')}
-                  </span>
                   <button
                     type="button"
                     onclick="openWebappModal('${escapeHtml(app.id)}')"
-                    class="admin-only text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1 cursor-pointer transition-colors"
+                    class="admin-only w-7 h-7 rounded-lg bg-slate-800 hover:bg-indigo-600 text-slate-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer flex-shrink-0"
+                    title="웹앱 정보 및 타이틀 수정"
                   >
-                    타이틀 수정 <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                    <i class="fa-solid fa-pen text-[10px]"></i>
+                  </button>
+                </div>
+
+                <!-- Description -->
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed whitespace-pre-line line-clamp-3" title="${escapeHtml(app.desc)}">
+                  ${escapeHtml(app.desc)}
+                </p>
+
+                <!-- Action Buttons -->
+                ${app.url ? `
+                <div class="mt-3.5 pt-3 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onclick="openAppRunnerModal('${escapeHtml(app.id)}', '${escapeHtml(app.url)}', '${escapeHtml(app.title)}', '${escapeHtml(app.icon || 'fa-solid fa-cube')}')"
+                    class="flex-1 py-2 px-3 rounded-xl ${theme.btnBg} text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    <i class="fa-solid fa-play text-[10px]"></i>
+                    <span>홈페이지 내 실행</span>
+                  </button>
+                  <a
+                    href="${escapeHtml(app.url)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition-colors cursor-pointer"
+                    title="새 탭에서 전체 화면으로 열기"
+                  >
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    <span>새 창</span>
+                  </a>
+                </div>
+                ` : ''}
+              </div>
+
+              <!-- Footer: Tags & Special Shortcuts -->
+              <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                <div class="flex flex-wrap items-center gap-1 truncate max-w-[200px]">
+                  ${(app.tags || []).slice(0, 3).map(t => `<span class="px-1.5 py-0.5 rounded bg-slate-800/80 ${theme.tagText} text-[10.5px]">#${escapeHtml(t)}</span>`).join('')}
+                </div>
+                <div class="flex items-center gap-2.5">
+                  ${app.id === 'webapp-eatzy-v3' ? `
+                    <button type="button" onclick="openFoodAppModal('native')" class="text-orange-400 hover:text-orange-300 font-semibold text-[11px] flex items-center gap-1 cursor-pointer" title="홈페이지 내장 즉시 추천">
+                      <span>즉시추천</span> <i class="fa-solid fa-utensils text-[9px]"></i>
+                    </button>
+                  ` : app.id === 'webapp-wherewego' ? `
+                    <button type="button" onclick="openTrekkingAppModal('presets')" class="text-emerald-400 hover:text-emerald-300 font-semibold text-[11px] flex items-center gap-1 cursor-pointer" title="인기 트레킹 코스 추천 가이드">
+                      <span>추천코스</span> <i class="fa-solid fa-mountain-sun text-[9px]"></i>
+                    </button>
+                  ` : ''}
+                  <button
+                    type="button"
+                    onclick="openWebappModal('${escapeHtml(app.id)}')"
+                    class="admin-only text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1 cursor-pointer transition-colors text-[11px]"
+                  >
+                    <span>수정</span> <i class="fa-solid fa-pen-to-square text-[9px]"></i>
                   </button>
                 </div>
               </div>
-            `;
-          }
+            </div>
+          `;
         }).join('') + `
           <!-- Card: Suggest / Add New Webapp Slot -->
-          <div onclick="openWebappModal()" class="admin-only cursor-pointer group relative p-5 rounded-xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500 hover:bg-slate-900/80 transition-all duration-300 flex flex-col items-center justify-center text-center min-h-[170px]">
+          <div onclick="openWebappModal()" class="admin-only cursor-pointer group relative p-5 rounded-2xl bg-slate-900/40 border border-dashed border-slate-800 hover:border-indigo-500 hover:bg-slate-900/80 transition-all duration-300 flex flex-col items-center justify-center text-center min-h-[170px]">
             <div class="w-10 h-10 rounded-full bg-slate-800 group-hover:bg-indigo-600/20 text-slate-400 group-hover:text-indigo-400 flex items-center justify-center border border-slate-700 group-hover:border-indigo-500/30 mb-2 transition-all">
               <i class="fa-solid fa-plus text-sm group-hover:scale-125 transition-transform"></i>
             </div>
@@ -5450,12 +5523,15 @@ Ingenium의 창의와 지혜를 바탕으로
         const titleInput = document.getElementById('webapp-title-input');
         const badgeInput = document.getElementById('webapp-badge-input');
         const iconInput = document.getElementById('webapp-icon-input');
+        const colorInput = document.getElementById('webapp-color-input');
         const urlInput = document.getElementById('webapp-url-input');
         const descInput = document.getElementById('webapp-desc-input');
         const tagsInput = document.getElementById('webapp-tags-input');
         const deleteBtn = document.getElementById('webapp-delete-btn');
 
         if (!modal || !box) return;
+
+        const defaultAppIds = ['webapp-eatzy-v3', 'webapp-wherewego', 'webapp-pomodoro', 'webapp-ai-summary', 'webapp-prompt-optimizer'];
 
         if (id) {
           const item = webappList.find(w => w.id === id);
@@ -5465,11 +5541,14 @@ Ingenium의 창의와 지혜를 바탕으로
             titleInput.value = item.title;
             badgeInput.value = item.badge || '';
             iconInput.value = item.icon || 'fa-solid fa-code';
+            if (colorInput) {
+              colorInput.value = item.themeColor || item.badgeColor || getAppTheme(item).key || 'indigo';
+            }
             urlInput.value = item.url || '';
             descInput.value = item.desc || '';
             tagsInput.value = (item.tags || []).join(', ');
 
-            if (item.isFeatured) {
+            if (item.isFeatured || defaultAppIds.includes(item.id)) {
               deleteBtn.classList.add('hidden');
             } else {
               deleteBtn.classList.remove('hidden');
@@ -5481,6 +5560,7 @@ Ingenium의 창의와 지혜를 바탕으로
           titleInput.value = '';
           badgeInput.value = '개발 중';
           iconInput.value = 'fa-solid fa-wand-magic-sparkles';
+          if (colorInput) colorInput.value = 'purple';
           urlInput.value = '';
           descInput.value = '';
           tagsInput.value = 'AI, WebApp, Utility';
@@ -5522,6 +5602,7 @@ Ingenium의 창의와 지혜를 바탕으로
         const titleInput = document.getElementById('webapp-title-input');
         const badgeInput = document.getElementById('webapp-badge-input');
         const iconInput = document.getElementById('webapp-icon-input');
+        const colorInput = document.getElementById('webapp-color-input');
         const urlInput = document.getElementById('webapp-url-input');
         const descInput = document.getElementById('webapp-desc-input');
         const tagsInput = document.getElementById('webapp-tags-input');
@@ -5529,6 +5610,7 @@ Ingenium의 창의와 지혜를 바탕으로
         const title = titleInput.value.trim();
         const badge = badgeInput.value.trim();
         const icon = iconInput.value.trim();
+        const themeColor = colorInput ? colorInput.value : 'indigo';
         const url = urlInput.value.trim();
         const desc = descInput.value.trim();
         const tags = tagsInput.value.split(',').map(t => t.trim().replace(/^#/, '')).filter(Boolean);
@@ -5547,6 +5629,8 @@ Ingenium의 창의와 지혜를 바탕으로
               ...updated[idx],
               title,
               badge,
+              badgeColor: themeColor,
+              themeColor,
               icon,
               url,
               desc,
@@ -5560,7 +5644,8 @@ Ingenium의 창의와 지혜를 바탕으로
             id: newId,
             title,
             badge: badge || '새 프로젝트',
-            badgeColor: 'indigo',
+            badgeColor: themeColor,
+            themeColor,
             icon: icon || 'fa-solid fa-code',
             desc,
             url,
@@ -5588,7 +5673,8 @@ Ingenium의 창의와 지혜를 바탕으로
 
         const item = webappList.find(w => w.id === id);
         if (!item) return;
-        if (item.isFeatured) {
+        const defaultAppIds = ['webapp-eatzy-v3', 'webapp-wherewego', 'webapp-pomodoro', 'webapp-ai-summary', 'webapp-prompt-optimizer'];
+        if (item.isFeatured || defaultAppIds.includes(item.id)) {
           showToast('기본 대표 웹앱은 삭제할 수 없습니다. 대신 타이틀 및 내용을 수정해주세요.');
           return;
         }
@@ -6208,6 +6294,105 @@ Ingenium의 창의와 지혜를 바탕으로
       }
 
       // ----------------------------------------------------
+      // Universal Live Mini WebApp Runner
+      // ----------------------------------------------------
+      let currentRunnerUrl = '';
+
+      function openAppRunnerModal(appId, url, title, iconClass) {
+        const modal = document.getElementById('app-runner-modal');
+        const box = document.getElementById('app-runner-modal-box');
+        const iframe = document.getElementById('app-runner-iframe');
+        const titleEl = document.getElementById('app-runner-title');
+        const iconEl = document.getElementById('app-runner-icon');
+        const extLink = document.getElementById('app-runner-external-link');
+        const loader = document.getElementById('app-runner-loader');
+
+        if (!modal || !box || !iframe) return;
+
+        // Route special apps if applicable
+        if (appId === 'webapp-wherewego') {
+          openTrekkingAppModal('live');
+          return;
+        } else if (appId === 'webapp-eatzy-v3') {
+          openFoodAppModal('live');
+          return;
+        }
+
+        // Fallback or default URLs
+        if (!url) {
+          if (appId === 'webapp-ai-summary') url = '/apps/ai-summary/';
+          else if (appId === 'webapp-pomodoro') url = '/apps/pomodoro/';
+          else if (appId === 'webapp-prompt-optimizer') url = '/apps/prompt-optimizer/';
+        }
+
+        currentRunnerUrl = url || '';
+
+        if (titleEl) titleEl.textContent = title || '라이브 웹앱';
+        if (iconEl) iconEl.innerHTML = `<i class="${iconClass || 'fa-solid fa-cube'}"></i>`;
+        if (extLink) extLink.href = currentRunnerUrl || '#';
+
+        if (loader) loader.classList.remove('opacity-0', 'pointer-events-none');
+
+        // Dynamically attach load listener
+        iframe.onload = onAppRunnerIframeLoaded;
+
+        // Set iframe src
+        iframe.src = currentRunnerUrl;
+
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100', 'pointer-events-auto');
+        box.classList.remove('scale-95');
+        box.classList.add('scale-100');
+      }
+
+      function onAppRunnerIframeLoaded() {
+        const loader = document.getElementById('app-runner-loader');
+        if (loader) {
+          loader.classList.add('opacity-0', 'pointer-events-none');
+        }
+      }
+      window.onAppRunnerIframeLoaded = onAppRunnerIframeLoaded;
+
+      // Attach initial listener if element exists
+      const initialRunnerIframe = document.getElementById('app-runner-iframe');
+      if (initialRunnerIframe) {
+        initialRunnerIframe.addEventListener('load', onAppRunnerIframeLoaded);
+      }
+
+      function reloadAppRunnerIframe() {
+        const iframe = document.getElementById('app-runner-iframe');
+        const loader = document.getElementById('app-runner-loader');
+        if (iframe && currentRunnerUrl) {
+          if (loader) loader.classList.remove('opacity-0', 'pointer-events-none');
+          iframe.src = currentRunnerUrl;
+          showToast('웹앱을 새로고침했습니다. 🔄');
+        }
+      }
+
+      function closeAppRunnerModal() {
+        const modal = document.getElementById('app-runner-modal');
+        const box = document.getElementById('app-runner-modal-box');
+        const iframe = document.getElementById('app-runner-iframe');
+        if (!modal || !box) return;
+
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.classList.remove('opacity-100', 'pointer-events-auto');
+        box.classList.add('scale-95');
+        box.classList.remove('scale-100');
+
+        // Clear iframe after transition to save memory
+        setTimeout(() => {
+          if (iframe) iframe.src = 'about:blank';
+        }, 300);
+      }
+
+      function handleAppRunnerBackdropClick(e) {
+        if (e.target.id === 'app-runner-modal') {
+          closeAppRunnerModal();
+        }
+      }
+
+      // ----------------------------------------------------
       // 4. Chatbot Open/Close & FAB Toggle
       // ----------------------------------------------------
       let isChatOpen = false;
@@ -6278,10 +6463,10 @@ Ingenium의 창의와 지혜를 바탕으로
             </button>
             <button
               type="button"
-              onclick="sendQuickMessage('오늘 뭐 먹지 v3 앱은 어떤 기능이 있어?')"
+              onclick="sendQuickMessage('오늘 뭐 먹지 앱은 어떤 기능이 있어?')"
               class="text-[11px] px-2.5 py-1 rounded-full bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white border border-slate-700 hover:border-indigo-500 transition-colors cursor-pointer"
             >
-              오늘 뭐 먹지 v3 🍱
+              오늘 뭐 먹지 🍱
             </button>
             <button
               type="button"
@@ -6448,7 +6633,7 @@ Ingenium의 창의와 지혜를 바탕으로
         let content = '';
 
         if (q.includes('오늘 뭐 먹지') || q.includes('음식') || q.includes('밥') || q.includes('메뉴') || q.includes('점심') || q.includes('저녁')) {
-          content = `<strong>오늘 뭐 먹지? v3</strong>는 Google AI Studio로 개발되어 Cloudflare Pages(<a href="https://eatzy.pages.dev/" target="_blank" rel="noopener noreferrer" class="text-indigo-400 font-bold underline">eatzy.pages.dev</a>)에 배포된 인기 웹앱입니다! 상단 미니 웹앱 탭 또는 아래 버튼을 누르시면 라이브 웹앱과 룰렛 추천기를 즉시 이용하실 수 있습니다! 🍱✨<br><br><button onclick="openFoodAppModal('live')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 cursor-pointer"><i class="fa-solid fa-play text-[10px]"></i> 오늘 뭐 먹지? 바로 실행</button>`;
+          content = `<strong>오늘 뭐 먹지?</strong>는 Google AI Studio로 개발되어 Cloudflare Pages(<a href="https://eatzy.pages.dev/" target="_blank" rel="noopener noreferrer" class="text-indigo-400 font-bold underline">eatzy.pages.dev</a>)에 배포된 인기 웹앱입니다! 상단 미니 웹앱 탭 또는 아래 버튼을 누르시면 라이브 웹앱과 룰렛 추천기를 즉시 이용하실 수 있습니다! 🍱✨<br><br><button onclick="openFoodAppModal('live')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 cursor-pointer"><i class="fa-solid fa-play text-[10px]"></i> 오늘 뭐 먹지? 바로 실행</button>`;
         } else if (q.includes('사진') || q.includes('아바타') || q.includes('이미지') || q.includes('프로필 사진')) {
           content = `프로필 사진 수정은 사진 위의 <strong>카메라 아이콘</strong>이나 프로필 사진을 직접 클릭(<button onclick="openAvatarModal()" class="text-indigo-400 font-bold underline hover:text-indigo-300 cursor-pointer">사진 변경 열기</button>)하시면 됩니다! 내 PC/모바일 사진 업로드, 웹 이미지 URL 입력, 프리셋 선택을 지원합니다. 📸`;
         } else if (q.includes('스킬') || q.includes('기술') || q.includes('스택')) {

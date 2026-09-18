@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { generateChatReply } from "./server/geminiService";
+import { generateChatReply, generateSummary, optimizePrompt } from "./server/geminiService";
 import { saveContentToHtml } from "./server/contentSaver";
 import { loadVisitorData, recordVisit, addVisitorCheer } from "./server/visitorService";
 
@@ -11,9 +11,42 @@ async function startServer() {
 
   app.use(express.json({ limit: "15mb" }));
 
+  // Serve standalone webapps from public/apps
+  app.use("/apps", express.static(path.join(process.cwd(), "public", "apps")));
+
   // API routes FIRST
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
+  });
+
+  // AI Smart Text Summary API
+  app.post("/api/ai/summarize", async (req, res) => {
+    try {
+      const { text, style, length } = req.body || {};
+      if (!text || typeof text !== "string" || text.trim() === "") {
+        return res.status(400).json({ error: "요약할 텍스트를 입력해주세요." });
+      }
+      const result = await generateSummary(text, style, length);
+      return res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error("AI Summary error:", err);
+      return res.status(500).json({ error: err.message || "텍스트 요약 중 오류가 발생했습니다." });
+    }
+  });
+
+  // Prompt Optimizer API
+  app.post("/api/ai/optimize-prompt", async (req, res) => {
+    try {
+      const { prompt, targetLlm, style } = req.body || {};
+      if (!prompt || typeof prompt !== "string" || prompt.trim() === "") {
+        return res.status(400).json({ error: "최적화할 프롬프트를 입력해주세요." });
+      }
+      const result = await optimizePrompt(prompt, targetLlm, style);
+      return res.json({ success: true, ...result });
+    } catch (err: any) {
+      console.error("Optimize Prompt error:", err);
+      return res.status(500).json({ error: err.message || "프롬프트 최적화 중 오류가 발생했습니다." });
+    }
   });
 
   // Visitor stats & logs API

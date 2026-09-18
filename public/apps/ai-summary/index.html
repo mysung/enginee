@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 스마트 텍스트 요약기 | 엔지니 미니 웹앱</title>
+  <meta name="description" content="긴 문서, 뉴스 아티클, 기획서를 핵심 3줄 불릿포인트와 키워드로 빠르게 요약하는 스마트 AI 텍스트 요약기" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Fonts: Pretentard / Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans KR"', '"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .chat-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-scroll::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background: rgba(51, 65, 85, 0.8);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0b0f19] text-slate-100 selection:bg-emerald-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-colors border border-slate-700">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>미니홈피 메인</span>
+      </a>
+      <div class="h-4 w-px bg-slate-700"></div>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-sm shadow-sm">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            AI 스마트 텍스트 요약기
+            <span class="px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Live v1.0</span>
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="copyShareUrl()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 transition-colors flex items-center gap-1.5" title="페이지 주소 복사">
+        <i class="fa-solid fa-share-nodes text-[11px]"></i>
+        <span class="hidden sm:inline">공유</span>
+      </button>
+      <a href="/" class="text-xs text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1">
+        <span>엔지니 포트폴리오</span>
+        <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+
+    <!-- Top Banner / Explainer -->
+    <div class="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/50 via-slate-900 to-slate-900 border border-emerald-500/30 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <span>긴 글이나 보고서를 핵심 3줄과 키워드로 압축 요약합니다</span>
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 mt-1">
+          긴 기사, 논문 초록, 비즈니스 기획서, 회의록을 붙여넣으면 핵심 결론과 키워드를 즉시 도출해 소중한 시간을 아껴드립니다.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-emerald-400 font-medium bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-500/20 flex-shrink-0">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Gemini AI & 스마트 로컬 엔진 탑재</span>
+      </div>
+    </div>
+
+    <!-- Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+
+      <!-- Left: Input & Options Column -->
+      <section class="flex flex-col gap-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg">
+        
+        <!-- Controls: Style & Length -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-sliders text-emerald-400"></i>
+              요약 스타일 선택
+            </label>
+            <!-- Preset Samples Dropdown/Buttons -->
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] text-slate-400">예시 입력:</span>
+              <button onclick="applySample('tech')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+                AI 트렌드
+              </button>
+              <button onclick="applySample('biz')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+                기획서
+              </button>
+              <button onclick="applySample('meeting')" class="px-2 py-0.5 rounded text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+                회의록
+              </button>
+            </div>
+          </div>
+
+          <!-- Style Buttons Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" onclick="selectStyle('bullets')" id="btn-style-bullets" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-emerald-600/20 text-emerald-300 border-emerald-500/50 shadow-sm flex flex-col items-center text-center gap-1">
+              <i class="fa-solid fa-list-check text-sm"></i>
+              <span>3줄 불릿포인트</span>
+            </button>
+            <button type="button" onclick="selectStyle('detailed')" id="btn-style-detailed" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center text-center gap-1">
+              <i class="fa-solid fa-file-lines text-sm"></i>
+              <span>상세 브리핑</span>
+            </button>
+            <button type="button" onclick="selectStyle('action')" id="btn-style-action" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center text-center gap-1">
+              <i class="fa-solid fa-lightbulb text-sm"></i>
+              <span>액션 아이템</span>
+            </button>
+            <button type="button" onclick="selectStyle('eli5')" id="btn-style-eli5" class="style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center text-center gap-1">
+              <i class="fa-solid fa-comments text-sm"></i>
+              <span>쉬운 설명(ELI5)</span>
+            </button>
+          </div>
+
+          <!-- Length selector -->
+          <div class="flex items-center justify-between text-xs pt-1">
+            <span class="text-slate-400">요약 분량:</span>
+            <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 gap-1">
+              <button type="button" onclick="selectLength('short')" id="btn-len-short" class="len-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors">짧게 (2~3줄)</button>
+              <button type="button" onclick="selectLength('medium')" id="btn-len-medium" class="len-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-600 text-white shadow-sm transition-colors">보통 (3~4줄)</button>
+              <button type="button" onclick="selectLength('long')" id="btn-len-long" class="len-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors">상세 (4~6줄)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="flex-1 flex flex-col gap-2 min-h-[280px]">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span>원문 텍스트 입력</span>
+            <div class="flex items-center gap-2">
+              <span id="char-count" class="font-mono text-slate-400">0자 / 0단어</span>
+              <button type="button" onclick="clearInput()" class="hover:text-rose-400 transition-colors" title="비우기">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="input-text"
+            rows="10"
+            placeholder="요약하고 싶은 기사, 회의록, 긴 보고서 전문을 여기에 붙여넣으세요... (단축키: Ctrl + Enter 실행)"
+            class="w-full flex-1 p-3.5 rounded-xl bg-slate-950 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-slate-100 placeholder-slate-500 text-sm leading-relaxed resize-y chat-scroll outline-none transition-all"
+            oninput="handleTextInput()"
+          ></textarea>
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex items-center gap-2 pt-2">
+          <button
+            id="btn-submit"
+            type="button"
+            onclick="runSummary()"
+            class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+          >
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span id="btn-submit-text">스마트 AI 요약 실행하기</span>
+          </button>
+          <button
+            type="button"
+            onclick="pasteFromClipboard()"
+            class="py-3 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-sm font-semibold transition-colors flex items-center gap-1.5"
+            title="클립보드 내용 붙여넣기"
+          >
+            <i class="fa-regular fa-clipboard"></i>
+            <span class="hidden sm:inline">붙여넣기</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right: Results Column -->
+      <section class="flex flex-col gap-4 bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg relative min-h-[380px]">
+        
+        <!-- Header & Action Tools -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-square-poll-vertical text-emerald-400"></i>
+              요약 분석 결과
+            </h3>
+            <span id="reading-time-badge" class="hidden px-2 py-0.5 rounded-full text-[10.5px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              약 0분 절약
+            </span>
+          </div>
+
+          <div id="result-actions" class="hidden flex items-center gap-2">
+            <button onclick="copyResult()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 flex items-center gap-1 transition-colors">
+              <i class="fa-regular fa-copy"></i>
+              <span>복사</span>
+            </button>
+            <button onclick="downloadResult()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs border border-slate-700 flex items-center gap-1 transition-colors">
+              <i class="fa-solid fa-download"></i>
+              <span>다운로드</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-center p-8">
+          <div class="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-slate-500 text-2xl mb-3">
+            <i class="fa-solid fa-file-waveform"></i>
+          </div>
+          <h4 class="text-base font-semibold text-slate-300">원문을 입력하고 요약 버튼을 눌러보세요</h4>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm">
+            AI가 방대한 문맥 속에서 핵심 맥락을 추출하여 깔끔한 3줄 불릿포인트와 주요 키워드로 정리해 드립니다.
+          </p>
+        </div>
+
+        <!-- Loading State Skeleton -->
+        <div id="loading-state" class="hidden flex-1 flex flex-col items-center justify-center text-center p-8 gap-3">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl animate-spin">
+            <i class="fa-solid fa-circle-notch"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-emerald-300">텍스트 핵심 맥락 분석 중...</h4>
+            <p class="text-xs text-slate-400 mt-1">인공지능 모델이 문장 구조와 핵심 사실을 축약하고 있습니다.</p>
+          </div>
+        </div>
+
+        <!-- Active Result State -->
+        <div id="result-content" class="hidden flex-1 flex flex-col gap-4 overflow-y-auto chat-scroll pr-1">
+          <!-- One-line Takeaway Box -->
+          <div class="p-4 rounded-xl bg-gradient-to-br from-emerald-950/60 to-slate-950 border border-emerald-500/40 shadow-sm">
+            <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block mb-1 flex items-center gap-1">
+              <i class="fa-solid fa-check-double text-[10px]"></i> 한 줄 핵심 결론
+            </span>
+            <p id="takeaway-text" class="text-sm sm:text-base font-bold text-white leading-relaxed">
+              -
+            </p>
+          </div>
+
+          <!-- Bullets -->
+          <div class="flex flex-col gap-2">
+            <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <i class="fa-solid fa-list-ul text-emerald-400 text-xs"></i>
+              핵심 요약 포인트
+            </span>
+            <div id="bullets-list" class="flex flex-col gap-2">
+              <!-- Rendered bullets -->
+            </div>
+          </div>
+
+          <!-- Keywords Tags -->
+          <div class="pt-3 border-t border-slate-800">
+            <span class="text-xs font-semibold text-slate-400 block mb-2">추출된 핵심 키워드:</span>
+            <div id="keywords-list" class="flex flex-wrap gap-1.5">
+              <!-- Rendered keywords -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-800 text-white border border-slate-700 shadow-2xl text-xs font-medium flex items-center gap-2 transform translate-y-8 opacity-0 pointer-events-none transition-all duration-300">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toast-text">알림 메시지</span>
+  </div>
+
+  <script>
+    let currentStyle = 'bullets';
+    let currentLength = 'medium';
+    let currentResult = null;
+
+    const SAMPLES = {
+      tech: `인공지능 기술의 발전 속도는 소프트웨어 개발 패러다임을 근본적으로 변화시키고 있습니다. 과거의 프로그래밍이 모든 로직을 명시적인 코드로 작성하는 방식이었다면, 현재는 대규모 언어 모델(LLM)과 지능형 에이전트(Agentic AI)가 인간의 의도를 해석하여 코드와 결과물을 스스로 조율하는 시대로 진입했습니다. 특히 2026년에 이르러 AI 에이전트는 단순한 텍스트 완성을 넘어, 브라우저 조작, 파일 시스템 수정, API 오케스트레이션을 능동적으로 수행합니다. 이에 따라 개발자의 역량은 단순한 문법 숙련도보다 문제 정의 능력, 시스템 아키텍처 설계, 그리고 명확한 프롬프트 엔지니어링 역량으로 무게중심이 이동하고 있습니다. 결론적으로 AI는 엔지니어를 대체하는 것이 아니라, AI를 적극적으로 도구화하는 엔지니어가 그렇지 못한 개발자를 앞서나가는 양상이 뚜렷해지고 있습니다.`,
+      biz: `2026년 3분기 디지털 프로덕트 전략 보고서:
+당사는 사용자 잔존율(Retention)을 25% 개선하고 유료 전환율을 15% 이상 끌어올리기 위해 신규 미니 웹앱 허브 구축 프로젝트를 가동합니다.
+주요 추진 전략은 첫째, 복잡한 설치나 로그인 장벽 없이 브라우저에서 1초 만에 즉시 실행되는 초경량 웹 유틸리티 라인업을 강화하는 것입니다.
+둘째, 개인화 추천 엔진과 AI 스마트 요약 모듈을 결합하여 방문객의 실질적인 일상 편의를 극대화합니다.
+셋째, 배포 파이프라인을 Cloudflare Pages 및 에지 컴퓨팅 인프라로 전면 이전하여 전 세계 로딩 속도를 0.3초 미만으로 단축시킵니다.
+예상 소요 예산은 총 4,500만 원이며, 목표 론칭 일정은 10월 초순입니다. 각 유관 부서는 이달 말까지 상세 스프린트 계획을 수립하여 보고해주시기 바랍니다.`,
+      meeting: `[주간 스프린트 회의록 요약]
+- 일시: 2026년 9월 18일 오전 10시
+- 참석자: 기획팀 김팀장, 프론트엔드 이엔지니어, AI 연구원 박박사
+- 논의 안건: 신규 포트폴리오 웹앱 론칭 및 Gemini API 연동 테스트 검토
+- 주요 결정사항:
+  1. 포모도로 타이머와 미니 메모장 연동 시 로컬스토리지 자동 저장 주기를 1초 단위로 최적화하여 탭 종료 시에도 데이터가 유실되지 않도록 결정함.
+  2. 프롬프트 옵티마이저 모듈은 GPT-4, Claude 3.5, Gemini 2.5/3.8 등 멀티 모델 타겟팅 기능을 기본 지원하도록 UI를 재구성함.
+  3. 텍스트 요약기는 서버 네트워크 단절 시에도 브라우저 내장 휴리스틱 알고리즘으로 100% 끊김 없는 요약 경험을 보장하기로 합의함.
+- 차주 액션 아이템: 이엔지니어는 웹앱 간 반응형 모달 링크 점검 완료, 박박사는 API 에러 핸들러 폴백 최종 테스트.`
+    };
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-text');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.remove('translate-y-8', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+      setTimeout(() => {
+        toast.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+      }, 3000);
+    }
+
+    function selectStyle(style) {
+      currentStyle = style;
+      const styles = ['bullets', 'detailed', 'action', 'eli5'];
+      styles.forEach(s => {
+        const btn = document.getElementById('btn-style-' + s);
+        if (btn) {
+          if (s === style) {
+            btn.className = 'style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-emerald-600/20 text-emerald-300 border-emerald-500/50 shadow-sm flex flex-col items-center text-center gap-1';
+          } else {
+            btn.className = 'style-btn px-2.5 py-2 rounded-xl text-xs font-semibold border transition-all bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200 flex flex-col items-center text-center gap-1';
+          }
+        }
+      });
+    }
+
+    function selectLength(len) {
+      currentLength = len;
+      const lens = ['short', 'medium', 'long'];
+      lens.forEach(l => {
+        const btn = document.getElementById('btn-len-' + l);
+        if (btn) {
+          if (l === len) {
+            btn.className = 'len-btn px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-600 text-white shadow-sm transition-colors';
+          } else {
+            btn.className = 'len-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors';
+          }
+        }
+      });
+    }
+
+    function handleTextInput() {
+      const textarea = document.getElementById('input-text');
+      const charCountEl = document.getElementById('char-count');
+      const val = textarea.value || '';
+      const chars = val.length;
+      const words = val.trim().split(/\s+/).filter(Boolean).length;
+      charCountEl.textContent = `${chars.toLocaleString()}자 / ${words.toLocaleString()}단어`;
+    }
+
+    function clearInput() {
+      const textarea = document.getElementById('input-text');
+      textarea.value = '';
+      handleTextInput();
+      textarea.focus();
+    }
+
+    async function pasteFromClipboard() {
+      try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          const text = await navigator.clipboard.readText();
+          const textarea = document.getElementById('input-text');
+          textarea.value = text;
+          handleTextInput();
+          showToast('클립보드에서 텍스트를 붙여넣었습니다.');
+        } else {
+          showToast('Ctrl + V 단축키로 직접 붙여넣어 주세요.');
+        }
+      } catch (e) {
+        showToast('Ctrl + V 단축키로 붙여넣어 주세요.');
+      }
+    }
+
+    function applySample(type) {
+      const sample = SAMPLES[type];
+      if (!sample) return;
+      const textarea = document.getElementById('input-text');
+      textarea.value = sample;
+      handleTextInput();
+      showToast('예시 텍스트가 입력되었습니다.');
+    }
+
+    // Client-side fallback smart summarizer
+    function clientFallbackSummarize(text, style, length) {
+      const clean = text.trim();
+      const sentences = clean
+        .split(/(?<=[.?!。])\s+|\n+/)
+        .map(s => s.trim())
+        .filter(s => s.length > 8);
+
+      let targetCount = length === 'short' ? 2 : length === 'long' ? 5 : 3;
+      let bullets = [];
+
+      if (sentences.length <= targetCount) {
+        bullets = sentences;
+      } else {
+        bullets.push(sentences[0]);
+        const step = Math.floor((sentences.length - 2) / (targetCount - 1));
+        for (let i = 1; i < targetCount - 1; i++) {
+          const idx = Math.min(sentences.length - 2, i * step);
+          bullets.push(sentences[idx]);
+        }
+        bullets.push(sentences[sentences.length - 1]);
+      }
+
+      // Keywords
+      const words = clean
+        .replace(/[^\w가-힣\s]/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.length >= 2 && !['그리고', '하지만', '또한', '있는', '것은', '등의', '따라', '통해'].includes(w));
+      const freq = {};
+      words.forEach(w => freq[w] = (freq[w] || 0) + 1);
+      const keywords = Object.keys(freq).sort((a, b) => freq[b] - freq[a]).slice(0, 5);
+
+      const estReadMinutes = Math.max(1, Math.round(clean.length / 350));
+
+      return {
+        oneLineTakeaway: bullets[0] || '본문의 핵심 정보를 요약했습니다.',
+        bullets: bullets,
+        keywords: keywords.length > 0 ? keywords : ['핵심요약', '정보압축'],
+        readingTimeSaved: `약 ${Math.max(1, estReadMinutes - 1)}분 절약 (${clean.length}자)`
+      };
+    }
+
+    async function runSummary() {
+      const textarea = document.getElementById('input-text');
+      const text = textarea.value.trim();
+
+      if (!text) {
+        showToast('요약할 텍스트를 먼저 입력해주세요.');
+        textarea.focus();
+        return;
+      }
+
+      const emptyState = document.getElementById('empty-state');
+      const loadingState = document.getElementById('loading-state');
+      const resultContent = document.getElementById('result-content');
+      const resultActions = document.getElementById('result-actions');
+      const btnSubmit = document.getElementById('btn-submit');
+      const btnSubmitText = document.getElementById('btn-submit-text');
+
+      emptyState.classList.add('hidden');
+      resultContent.classList.add('hidden');
+      resultActions.classList.add('hidden');
+      loadingState.classList.remove('hidden');
+
+      btnSubmit.disabled = true;
+      btnSubmit.classList.add('opacity-70');
+      btnSubmitText.textContent = '핵심 요약 분석 중...';
+
+      try {
+        let data = null;
+        try {
+          const res = await fetch('/api/ai/summarize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text,
+              style: currentStyle,
+              length: currentLength
+            })
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success) {
+              data = json;
+            }
+          }
+        } catch (netErr) {
+          console.warn('Network call failed, switching to local smart summarizer', netErr);
+        }
+
+        if (!data) {
+          data = clientFallbackSummarize(text, currentStyle, currentLength);
+        }
+
+        currentResult = data;
+        renderResult(data);
+        showToast('텍스트 요약이 완료되었습니다! ✨');
+      } catch (err) {
+        console.error('Summary error', err);
+        const fallback = clientFallbackSummarize(text, currentStyle, currentLength);
+        currentResult = fallback;
+        renderResult(fallback);
+        showToast('오프라인 스마트 엔진으로 요약이 완료되었습니다.');
+      } finally {
+        loadingState.classList.add('hidden');
+        btnSubmit.disabled = false;
+        btnSubmit.classList.remove('opacity-70');
+        btnSubmitText.textContent = '스마트 AI 요약 실행하기';
+      }
+    }
+
+    function renderResult(data) {
+      const resultContent = document.getElementById('result-content');
+      const resultActions = document.getElementById('result-actions');
+      const takeawayEl = document.getElementById('takeaway-text');
+      const bulletsEl = document.getElementById('bullets-list');
+      const keywordsEl = document.getElementById('keywords-list');
+      const readingBadge = document.getElementById('reading-time-badge');
+
+      takeawayEl.textContent = data.oneLineTakeaway || '핵심 요약 결론';
+
+      bulletsEl.innerHTML = (data.bullets || []).map((b, idx) => `
+        <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 hover:border-emerald-500/40 transition-colors">
+          <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5 border border-emerald-500/30">
+            ${idx + 1}
+          </span>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">${escapeHtml(b)}</p>
+        </div>
+      `).join('');
+
+      keywordsEl.innerHTML = (data.keywords || []).map(k => `
+        <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 flex items-center gap-1">
+          #${escapeHtml(k)}
+        </span>
+      `).join('');
+
+      if (data.readingTimeSaved) {
+        readingBadge.textContent = data.readingTimeSaved;
+        readingBadge.classList.remove('hidden');
+      }
+
+      resultContent.classList.remove('hidden');
+      resultActions.classList.remove('hidden');
+    }
+
+    function copyResult() {
+      if (!currentResult) return;
+      let text = `[한 줄 결론]\n${currentResult.oneLineTakeaway}\n\n[핵심 불릿 요약]\n`;
+      (currentResult.bullets || []).forEach((b, i) => {
+        text += `${i + 1}. ${b}\n`;
+      });
+      if (currentResult.keywords && currentResult.keywords.length > 0) {
+        text += `\n[키워드] ${currentResult.keywords.map(k => '#' + k).join(' ')}`;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('요약 결과가 클립보드에 복사되었습니다! 📋');
+        });
+      } else {
+        showToast('클립보드 복사 기능을 지원하지 않는 환경입니다.');
+      }
+    }
+
+    function downloadResult() {
+      if (!currentResult) return;
+      let md = `# AI 스마트 텍스트 요약 결과\n\n`;
+      md += `**한 줄 결론:**\n> ${currentResult.oneLineTakeaway}\n\n`;
+      md += `## 핵심 요약\n`;
+      (currentResult.bullets || []).forEach(b => {
+        md += `- ${b}\n`;
+      });
+      if (currentResult.keywords) {
+        md += `\n**핵심 키워드:** ${currentResult.keywords.map(k => '`#' + k + '`').join(' ')}\n`;
+      }
+      md += `\n---\n*생성: 엔지니 AI 스마트 텍스트 요약기*`;
+
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `요약결과_${new Date().toISOString().slice(0,10)}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('마크다운 파일로 다운로드되었습니다.');
+    }
+
+    function copyShareUrl() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+          showToast('페이지 주소가 복사되었습니다! 🔗');
+        });
+      } else {
+        showToast(window.location.href);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Shortcut: Ctrl + Enter to submit
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        runSummary();
+      }
+    });
+  </script>
+</body>
+</html>
