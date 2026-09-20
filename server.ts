@@ -13,6 +13,8 @@ async function startServer() {
 
   // Serve standalone webapps from public/apps
   app.use("/apps", express.static(path.join(process.cwd(), "public", "apps")));
+  // Serve background music and audio assets from public/audio
+  app.use("/audio", express.static(path.join(process.cwd(), "public", "audio")));
 
   // API routes FIRST
   app.get("/api/health", (req, res) => {

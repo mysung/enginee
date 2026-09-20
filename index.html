@@ -116,6 +116,29 @@
       body.is-admin-active #admin-banner {
         display: flex !important;
       }
+      /* BGM Player Animations */
+      @keyframes spinSlow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .spin-slow {
+        animation: spinSlow 6s linear infinite;
+      }
+      @keyframes eqBar1 {
+        0%, 100% { height: 3px; }
+        50% { height: 11px; }
+      }
+      @keyframes eqBar2 {
+        0%, 100% { height: 12px; }
+        50% { height: 4px; }
+      }
+      @keyframes eqBar3 {
+        0%, 100% { height: 5px; }
+        50% { height: 13px; }
+      }
+      .eq-bar-1 { animation: eqBar1 0.75s ease-in-out infinite; }
+      .eq-bar-2 { animation: eqBar2 0.65s ease-in-out infinite; }
+      .eq-bar-3 { animation: eqBar3 0.85s ease-in-out infinite; }
     </style>
     <script>
       // ===== 데이터 버전 관리 (이전 localStorage 데이터 자동 초기화 및 public/face.jpg 강제 적용) =====
@@ -926,6 +949,132 @@ Ingenium의 창의와 지혜를 바탕으로
         <i id="fab-icon" class="fa-solid fa-robot text-xl transition-transform duration-300 group-hover:rotate-12"></i>
       </button>
     </div>
+
+    <!-- ==================================================== -->
+    <!-- Background Music (BGM) Element & Floating Controller -->
+    <!-- Beethoven Sonata No. 8 "Pathétique", 2nd movement   -->
+    <!-- ==================================================== -->
+    <audio id="bgm-audio" loop preload="auto">
+      <source src="/audio/pathetique-2nd.mp3" type="audio/mpeg" />
+      <source src="/audio/pathetique-2nd.ogg" type="audio/ogg" />
+      <source src="https://upload.wikimedia.org/wikipedia/commons/6/63/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_II._Adagio_cantabile.ogg" type="audio/ogg" />
+    </audio>
+
+    <!-- Floating BGM Player Controller (Bottom-Left) -->
+    <aside
+      id="bgm-player-widget"
+      aria-label="배경음악 플레이어"
+      class="fixed bottom-6 left-4 sm:left-6 z-40 flex items-center select-none"
+    >
+      <!-- Expanded Player Card -->
+      <div
+        id="bgm-card"
+        class="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-indigo-500/40 hover:border-indigo-500/70 shadow-2xl shadow-black/80 transition-all duration-300 max-w-[calc(100vw-6rem)] sm:max-w-md group"
+      >
+        <!-- Disc / Vinyl Art with Rotation -->
+        <div
+          id="bgm-disc-container"
+          class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-indigo-900 via-indigo-700 to-indigo-500 p-0.5 flex-shrink-0 shadow-md shadow-indigo-950/60 cursor-pointer transition-transform hover:scale-105"
+          onclick="toggleBgmPlay()"
+          title="음악 재생 / 일시정지"
+        >
+          <div id="bgm-disc-icon" class="w-full h-full rounded-full bg-slate-950 flex items-center justify-center text-indigo-300 text-xs sm:text-sm">
+            <i class="fa-solid fa-compact-disc"></i>
+          </div>
+          <!-- Center Pin -->
+          <div class="absolute inset-0 m-auto w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-300 pointer-events-none"></div>
+        </div>
+
+        <!-- Track Info & Equalizer -->
+        <div class="min-w-0 flex-1 cursor-pointer pr-1" onclick="toggleBgmPlay()" title="음악 재생 / 일시정지">
+          <div class="flex items-center gap-1.5">
+            <span class="text-[11px] sm:text-xs font-extrabold text-white tracking-tight truncate group-hover:text-indigo-300 transition-colors">
+              Beethoven · Pathétique
+            </span>
+            <!-- Live Equalizer Bars -->
+            <div id="bgm-equalizer" class="hidden items-end gap-[2px] h-3 w-3 flex-shrink-0" aria-hidden="true">
+              <span class="w-[2px] bg-indigo-400 rounded-full eq-bar-1"></span>
+              <span class="w-[2px] bg-indigo-300 rounded-full eq-bar-2"></span>
+              <span class="w-[2px] bg-indigo-400 rounded-full eq-bar-3"></span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 text-[10px] text-indigo-300/80">
+            <span class="truncate">2nd mov. Adagio cantabile</span>
+            <span id="bgm-status-badge" class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex-shrink-0 font-medium">BGM</span>
+          </div>
+        </div>
+
+        <!-- Controls (Play/Pause, Mute, Volume, Minimize) -->
+        <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+          <!-- Play / Pause Toggle Button -->
+          <button
+            type="button"
+            id="bgm-play-btn"
+            onclick="toggleBgmPlay()"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center text-xs transition-all duration-200 active:scale-95 shadow-md shadow-indigo-950/60 cursor-pointer"
+            title="재생 / 일시정지"
+            aria-label="재생 / 일시정지"
+          >
+            <i id="bgm-play-icon" class="fa-solid fa-play ml-0.5 text-[11px]"></i>
+          </button>
+
+          <!-- Mute / Unmute Button -->
+          <button
+            type="button"
+            id="bgm-mute-btn"
+            onclick="toggleBgmMute()"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-700/80 cursor-pointer"
+            title="음소거 토글"
+            aria-label="음소거 토글"
+          >
+            <i id="bgm-mute-icon" class="fa-solid fa-volume-high text-[11px]"></i>
+          </button>
+
+          <!-- Volume Slider (Desktop / Tablet) -->
+          <div class="hidden md:flex items-center ml-1 w-14 lg:w-16">
+            <input
+              type="range"
+              id="bgm-volume-slider"
+              min="0"
+              max="1"
+              step="0.05"
+              value="0.4"
+              oninput="setBgmVolume(this.value)"
+              class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+              title="볼륨 조절"
+              aria-label="볼륨 조절"
+            />
+          </div>
+
+          <!-- Minimize Toggle Button -->
+          <button
+            type="button"
+            onclick="toggleBgmMinimize()"
+            class="w-6 h-6 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center justify-center text-[10px] transition-colors cursor-pointer"
+            title="플레이어 접기"
+            aria-label="플레이어 접기"
+          >
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Minimized Floating Capsule (Hidden by default, shown when collapsed) -->
+      <button
+        type="button"
+        id="bgm-minimized-btn"
+        onclick="toggleBgmMinimize()"
+        class="hidden items-center gap-2 px-3 py-2 rounded-full bg-slate-900/95 backdrop-blur-xl border border-indigo-500/50 hover:border-indigo-500 text-white shadow-xl shadow-black/70 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+        title="배경음악 플레이어 열기"
+        aria-label="배경음악 플레이어 열기"
+      >
+        <div id="bgm-mini-disc" class="w-5 h-5 rounded-full bg-slate-950 flex items-center justify-center text-indigo-400 text-xs">
+          <i class="fa-solid fa-compact-disc"></i>
+        </div>
+        <span class="text-xs font-semibold text-indigo-200">BGM</span>
+        <i class="fa-solid fa-chevron-right text-[9px] text-slate-400"></i>
+      </button>
+    </aside>
 
     <!-- ==================================================== -->
     <!-- [미니 웹앱] 오늘 뭐 먹지? 모달 (Cloudflare 라이브 & 룰렛) -->
@@ -4355,6 +4504,7 @@ Ingenium의 창의와 지혜를 바탕으로
         renderWebapps();
         syncFoodAppTitle();
         initVisitorSection();
+        initBgm();
       });
 
       // ====================================================
@@ -6743,6 +6893,209 @@ Ingenium의 창의와 지혜를 바탕으로
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+      }
+
+      // ====================================================
+      // 10. BACKGROUND MUSIC (BGM) CONTROLLER
+      // Beethoven Sonata No. 8 "Pathétique", 2nd movement (Adagio cantabile)
+      // ====================================================
+      let bgmAudio = null;
+      let bgmUserExplicitlyPaused = false;
+      let bgmAutoplayTriggerAttached = false;
+
+      function initBgm() {
+        bgmAudio = document.getElementById('bgm-audio');
+        if (!bgmAudio) return;
+
+        // Restore user volume preference or default to gentle 0.4
+        let savedVol = 0.4;
+        try {
+          const volPref = localStorage.getItem('bgm_volume_pref');
+          if (volPref !== null && !isNaN(parseFloat(volPref))) {
+            savedVol = parseFloat(volPref);
+          }
+        } catch (e) {}
+
+        bgmAudio.volume = Math.max(0, Math.min(1, savedVol));
+        const volSlider = document.getElementById('bgm-volume-slider');
+        if (volSlider) volSlider.value = String(bgmAudio.volume);
+
+        // Restore minimized state if previously collapsed
+        try {
+          if (localStorage.getItem('bgm_minimized_pref') === 'true') {
+            const card = document.getElementById('bgm-card');
+            const minBtn = document.getElementById('bgm-minimized-btn');
+            if (card && minBtn) {
+              card.classList.add('hidden');
+              minBtn.classList.remove('hidden');
+              minBtn.classList.add('flex');
+            }
+          }
+        } catch (e) {}
+
+        // Listen for standard audio state events
+        bgmAudio.addEventListener('play', () => updateBgmUI(true));
+        bgmAudio.addEventListener('pause', () => updateBgmUI(false));
+        bgmAudio.addEventListener('ended', () => {
+          bgmAudio.currentTime = 0;
+          bgmAudio.play().catch(() => {});
+        });
+
+        // Check if user previously explicitly paused
+        try {
+          if (localStorage.getItem('bgm_paused_pref') === 'true') {
+            bgmUserExplicitlyPaused = true;
+            updateBgmUI(false);
+            return;
+          }
+        } catch (e) {}
+
+        // Trigger autoplay for landing page
+        attemptAutoplay();
+      }
+
+      function updateBgmUI(isPlaying) {
+        const playIcon = document.getElementById('bgm-play-icon');
+        const discIcon = document.getElementById('bgm-disc-icon');
+        const miniDisc = document.getElementById('bgm-mini-disc');
+        const equalizer = document.getElementById('bgm-equalizer');
+        const statusBadge = document.getElementById('bgm-status-badge');
+
+        if (isPlaying) {
+          if (playIcon) playIcon.className = 'fa-solid fa-pause text-[11px]';
+          if (discIcon) discIcon.classList.add('spin-slow');
+          if (miniDisc) miniDisc.classList.add('spin-slow');
+          if (equalizer) {
+            equalizer.classList.remove('hidden');
+            equalizer.classList.add('flex');
+          }
+          if (statusBadge) {
+            statusBadge.textContent = '재생 중';
+            statusBadge.className = 'text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex-shrink-0 font-medium';
+          }
+        } else {
+          if (playIcon) playIcon.className = 'fa-solid fa-play ml-0.5 text-[11px]';
+          if (discIcon) discIcon.classList.remove('spin-slow');
+          if (miniDisc) miniDisc.classList.remove('spin-slow');
+          if (equalizer) {
+            equalizer.classList.add('hidden');
+            equalizer.classList.remove('flex');
+          }
+          if (statusBadge) {
+            statusBadge.textContent = bgmUserExplicitlyPaused ? '정지됨' : '클릭 시 재생';
+            statusBadge.className = 'text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex-shrink-0 font-medium';
+          }
+        }
+      }
+
+      function attemptAutoplay() {
+        if (!bgmAudio) return;
+
+        const playPromise = bgmAudio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              updateBgmUI(true);
+            })
+            .catch((err) => {
+              // Browser autoplay policy prevented instant audio playback
+              updateBgmUI(false);
+              const statusBadge = document.getElementById('bgm-status-badge');
+              if (statusBadge) {
+                statusBadge.textContent = '클릭 시 재생';
+              }
+
+              // Bind one-time interaction listeners on window to begin playback seamlessly on first touch/click
+              if (!bgmAutoplayTriggerAttached) {
+                bgmAutoplayTriggerAttached = true;
+                const events = ['click', 'pointerdown', 'keydown', 'touchstart'];
+                const onFirstInteraction = () => {
+                  if (!bgmUserExplicitlyPaused && bgmAudio) {
+                    bgmAudio.play().then(() => {
+                      updateBgmUI(true);
+                    }).catch(() => {});
+                  }
+                  events.forEach((evtName) => {
+                    window.removeEventListener(evtName, onFirstInteraction, true);
+                  });
+                };
+
+                events.forEach((evtName) => {
+                  window.addEventListener(evtName, onFirstInteraction, { once: true, capture: true });
+                });
+              }
+            });
+        }
+      }
+
+      function toggleBgmPlay() {
+        if (!bgmAudio) bgmAudio = document.getElementById('bgm-audio');
+        if (!bgmAudio) return;
+
+        if (bgmAudio.paused) {
+          bgmUserExplicitlyPaused = false;
+          try { localStorage.setItem('bgm_paused_pref', 'false'); } catch (e) {}
+          bgmAudio.play().then(() => {
+            updateBgmUI(true);
+          }).catch((err) => {
+            console.warn('BGM play failed:', err);
+          });
+        } else {
+          bgmUserExplicitlyPaused = true;
+          try { localStorage.setItem('bgm_paused_pref', 'true'); } catch (e) {}
+          bgmAudio.pause();
+          updateBgmUI(false);
+        }
+      }
+
+      function toggleBgmMute() {
+        if (!bgmAudio) bgmAudio = document.getElementById('bgm-audio');
+        if (!bgmAudio) return;
+
+        bgmAudio.muted = !bgmAudio.muted;
+        const muteIcon = document.getElementById('bgm-mute-icon');
+        if (muteIcon) {
+          muteIcon.className = bgmAudio.muted
+            ? 'fa-solid fa-volume-xmark text-rose-400 text-[11px]'
+            : 'fa-solid fa-volume-high text-[11px]';
+        }
+      }
+
+      function setBgmVolume(val) {
+        if (!bgmAudio) bgmAudio = document.getElementById('bgm-audio');
+        if (!bgmAudio) return;
+
+        const vol = parseFloat(val);
+        bgmAudio.volume = vol;
+        try { localStorage.setItem('bgm_volume_pref', String(vol)); } catch (e) {}
+
+        const muteIcon = document.getElementById('bgm-mute-icon');
+        if (vol === 0) {
+          bgmAudio.muted = true;
+          if (muteIcon) muteIcon.className = 'fa-solid fa-volume-xmark text-rose-400 text-[11px]';
+        } else {
+          bgmAudio.muted = false;
+          if (muteIcon) muteIcon.className = 'fa-solid fa-volume-high text-[11px]';
+        }
+      }
+
+      function toggleBgmMinimize() {
+        const card = document.getElementById('bgm-card');
+        const minBtn = document.getElementById('bgm-minimized-btn');
+        if (!card || !minBtn) return;
+
+        const isCurrentlyExpanded = !card.classList.contains('hidden');
+        if (isCurrentlyExpanded) {
+          card.classList.add('hidden');
+          minBtn.classList.remove('hidden');
+          minBtn.classList.add('flex');
+          try { localStorage.setItem('bgm_minimized_pref', 'true'); } catch (e) {}
+        } else {
+          card.classList.remove('hidden');
+          minBtn.classList.add('hidden');
+          minBtn.classList.remove('flex');
+          try { localStorage.setItem('bgm_minimized_pref', 'false'); } catch (e) {}
+        }
       }
     </script>
   </body>
