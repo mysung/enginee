@@ -116,7 +116,7 @@
       body.is-admin-active #admin-banner {
         display: flex !important;
       }
-      /* BGM Player Animations */
+      /* BGM Player Animations & Mobile WebKit Hardening */
       @keyframes spinSlow {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
@@ -139,6 +139,33 @@
       .eq-bar-1 { animation: eqBar1 0.75s ease-in-out infinite; }
       .eq-bar-2 { animation: eqBar2 0.65s ease-in-out infinite; }
       .eq-bar-3 { animation: eqBar3 0.85s ease-in-out infinite; }
+
+      /* Mobile WebKit compositor isolation to prevent black box/band artifacts */
+      #bgm-player-widget,
+      #bgm-card,
+      #bgm-minimized-btn {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        isolation: isolate;
+      }
+      #bgm-card {
+        overflow: hidden;
+      }
+      #bgm-volume-container {
+        display: none !important;
+      }
+      @media (min-width: 768px) {
+        #bgm-volume-container {
+          display: flex !important;
+        }
+      }
+      @media (max-width: 767px) {
+        #fab-tooltip {
+          display: none !important;
+        }
+      }
     </style>
     <script>
       // ===== 데이터 버전 관리 (이전 localStorage 데이터 자동 초기화 및 public/face.jpg 강제 적용) =====
@@ -927,9 +954,12 @@ Ingenium의 창의와 지혜를 바탕으로
     </div>
 
     <!-- Floating Action Button (FAB) -->
-    <div class="fixed bottom-6 right-4 sm:right-6 z-50 flex items-center gap-3">
-      <!-- Tooltip Bubble (Visible initially, then fades out or on hover) -->
-      <div id="fab-tooltip" class="hidden sm:flex items-center px-3 py-1.5 rounded-xl bg-slate-900/95 border border-indigo-500/40 text-xs text-indigo-200 shadow-xl shadow-black/60 pointer-events-none transition-opacity duration-300">
+    <div
+      class="fixed bottom-6 right-4 sm:right-6 z-50 flex items-center gap-3"
+      style="bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));"
+    >
+      <!-- Tooltip Bubble (Desktop only, positioned absolute so it never takes flex layout space or collides on mobile) -->
+      <div id="fab-tooltip" class="hidden md:flex absolute right-16 items-center px-3 py-1.5 rounded-xl bg-slate-900/95 border border-indigo-500/40 text-xs text-indigo-200 shadow-xl shadow-black/60 pointer-events-none transition-opacity duration-300 whitespace-nowrap">
         <span>AI 비서와 대화하기</span>
         <div class="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 bg-slate-900 rotate-45 border-r border-t border-indigo-500/40"></div>
       </div>
@@ -939,7 +969,7 @@ Ingenium의 창의와 지혜를 바탕으로
         id="chatbot-fab"
         type="button"
         onclick="toggleChat()"
-        class="relative w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-600/40 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group focus:outline-none focus:ring-4 focus:ring-indigo-500/30"
+        class="relative w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-600/40 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group focus:outline-none focus:ring-4 focus:ring-indigo-500/30 cursor-pointer"
         aria-label="AI 비서 챗봇 열기"
       >
         <!-- Pulse effect ring -->
@@ -954,7 +984,7 @@ Ingenium의 창의와 지혜를 바탕으로
     <!-- Background Music (BGM) Element & Floating Controller -->
     <!-- Beethoven Sonata No. 8 "Pathétique", 2nd movement   -->
     <!-- ==================================================== -->
-    <audio id="bgm-audio" loop preload="auto">
+    <audio id="bgm-audio" loop preload="auto" class="hidden" style="display: none !important; position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none;">
       <source src="/audio/pathetique-2nd.mp3" type="audio/mpeg" />
       <source src="/audio/pathetique-2nd.ogg" type="audio/ogg" />
       <source src="https://upload.wikimedia.org/wikipedia/commons/6/63/Beethoven%2C_Sonata_No._8_in_C_Minor_Pathetique%2C_Op._13_-_II._Adagio_cantabile.ogg" type="audio/ogg" />
@@ -964,12 +994,13 @@ Ingenium의 창의와 지혜를 바탕으로
     <aside
       id="bgm-player-widget"
       aria-label="배경음악 플레이어"
-      class="fixed bottom-6 left-4 sm:left-6 z-40 flex items-center select-none"
+      class="fixed bottom-6 left-3 sm:left-6 z-40 flex items-center select-none"
+      style="bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));"
     >
       <!-- Expanded Player Card -->
       <div
         id="bgm-card"
-        class="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-indigo-500/40 hover:border-indigo-500/70 shadow-2xl shadow-black/80 transition-all duration-300 max-w-[calc(100vw-6rem)] sm:max-w-md group"
+        class="flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-indigo-500/40 hover:border-indigo-500/70 shadow-xl shadow-black/70 transition-all duration-300 max-w-[calc(100vw-5.5rem)] sm:max-w-md overflow-hidden group"
       >
         <!-- Disc / Vinyl Art with Rotation -->
         <div
@@ -999,19 +1030,19 @@ Ingenium의 창의와 지혜를 바탕으로
             </div>
           </div>
           <div class="flex items-center gap-1 text-[10px] text-indigo-300/80">
-            <span class="truncate">2nd mov. Adagio cantabile</span>
+            <span class="truncate">2nd mov. Adagio</span>
             <span id="bgm-status-badge" class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex-shrink-0 font-medium">BGM</span>
           </div>
         </div>
 
         <!-- Controls (Play/Pause, Mute, Volume, Minimize) -->
-        <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+        <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0 flex-nowrap">
           <!-- Play / Pause Toggle Button -->
           <button
             type="button"
             id="bgm-play-btn"
             onclick="toggleBgmPlay()"
-            class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center text-xs transition-all duration-200 active:scale-95 shadow-md shadow-indigo-950/60 cursor-pointer"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center text-xs transition-all duration-200 active:scale-95 shadow-md shadow-indigo-950/60 cursor-pointer flex-shrink-0"
             title="재생 / 일시정지"
             aria-label="재생 / 일시정지"
           >
@@ -1023,15 +1054,15 @@ Ingenium의 창의와 지혜를 바탕으로
             type="button"
             id="bgm-mute-btn"
             onclick="toggleBgmMute()"
-            class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-700/80 cursor-pointer"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-700/80 cursor-pointer flex-shrink-0"
             title="음소거 토글"
             aria-label="음소거 토글"
           >
             <i id="bgm-mute-icon" class="fa-solid fa-volume-high text-[11px]"></i>
           </button>
 
-          <!-- Volume Slider (Desktop / Tablet) -->
-          <div class="hidden md:flex items-center ml-1 w-14 lg:w-16">
+          <!-- Volume Slider (Desktop / Tablet only) -->
+          <div id="bgm-volume-container" class="hidden md:flex items-center ml-1 w-14 lg:w-16 flex-shrink-0">
             <input
               type="range"
               id="bgm-volume-slider"
@@ -1050,7 +1081,7 @@ Ingenium의 창의와 지혜를 바탕으로
           <button
             type="button"
             onclick="toggleBgmMinimize()"
-            class="w-6 h-6 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center justify-center text-[10px] transition-colors cursor-pointer"
+            class="w-6 h-6 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 flex items-center justify-center text-[10px] transition-colors cursor-pointer flex-shrink-0"
             title="플레이어 접기"
             aria-label="플레이어 접기"
           >
