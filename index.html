@@ -178,7 +178,7 @@
       // 반드시 body의 인라인 스크립트보다 먼저 실행되어야 함
       (function checkDataVersion() {
         try {
-          var APP_DATA_VERSION = '2026-09-15-v1789734160633';
+          var APP_DATA_VERSION = '2026-09-15-v1790336872673';
           var storedVersion = localStorage.getItem('app_data_version');
           var savedAvatar = localStorage.getItem('profile_image');
           // 이전 버전이거나 profile.jpg, unsplash 등 이전 기본값이 저장되어 있는 경우 public/face.jpg로 강제 초기화
@@ -419,30 +419,30 @@
         <div class="flex justify-center">
           <div class="inline-flex p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-inner max-w-xs w-full">
             <button
-              id="tab-btn-about"
-              type="button"
-              onclick="switchTab('about')"
-              class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-              aria-selected="true"
-            >
-              <i class="fa-solid fa-id-card text-xs"></i>
-              <span>자기소개</span>
-            </button>
-            <button
               id="tab-btn-apps"
               type="button"
               onclick="switchTab('apps')"
+              class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
+              aria-selected="true"
+            >
+              <i class="fa-solid fa-shapes text-xs"></i>
+              <span>미니 웹앱 갤러리</span>
+            </button>
+            <button
+              id="tab-btn-about"
+              type="button"
+              onclick="switchTab('about')"
               class="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-slate-200"
               aria-selected="false"
             >
-              <i class="fa-solid fa-shapes text-xs"></i>
-              <span>미니 웹앱</span>
+              <i class="fa-solid fa-id-card text-xs"></i>
+              <span>자기소개</span>
             </button>
           </div>
         </div>
 
         <!-- Tab 1: 소개 탭 (About) -->
-        <section id="tab-content-about" class="flex flex-col gap-6">
+        <section id="tab-content-about" class="hidden flex-col gap-6">
           <!-- 자기소개 카드 (동적 관리 및 수정 가능) -->
           <div class="p-6 sm:p-8 rounded-2xl bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-xl">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -465,9 +465,7 @@
                 <span>소개 수정</span>
               </button>
             </div>
-            <p id="about-card-bio" class="text-slate-300 leading-relaxed text-sm sm:text-base mb-6 whitespace-pre-line">반갑습니다!
-
-저는 복잡한 문제를 단순하고 직관적인 웹 경험으로 풀어내는 것을 즐깁니다.
+            <p id="about-card-bio" class="text-slate-300 leading-relaxed text-sm sm:text-base mb-6 whitespace-pre-line">저는 복잡한 문제를 단순하고 직관적인 웹 경험으로 풀어내는 것을 즐깁니다.
 AI와 현대적 컴퓨팅 기술을 결합하여 일상에 실질적인 가치를 더하는 도구와 경험을 만들어갑니다.
 
 Engineer의 어원인 라틴어 ingenium은
@@ -569,7 +567,7 @@ Ingenium의 창의와 지혜를 바탕으로
         </section>
 
         <!-- Tab 2: 미니 웹앱 탭 (Mini Web Apps) -->
-        <section id="tab-content-apps" class="hidden flex-col gap-6">
+        <section id="tab-content-apps" class="flex flex-col gap-6">
           <div class="p-6 sm:p-8 rounded-2xl bg-slate-900/60 border border-slate-800 backdrop-blur-sm shadow-xl">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
@@ -2627,53 +2625,18 @@ Ingenium의 창의와 지혜를 바탕으로
           <div class="pt-2 border-t border-slate-800/80">
             <h4 class="text-xs font-semibold text-slate-300 mb-2.5 flex items-center gap-1.5">
               <i class="fa-solid fa-link text-indigo-400"></i>
-              <span>연락처 및 소셜 링크 URL</span>
+              <span>웹사이트 / 블로그 링크 (선택 사항)</span>
             </h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <div>
-                <label for="author-github-input" class="block text-[11px] text-slate-400 mb-1">
-                  GitHub URL
-                </label>
-                <input
-                  type="text"
-                  id="author-github-input"
-                  placeholder="https://github.com/..."
-                  class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500 font-mono"
-                >
-              </div>
-              <div>
-                <label for="author-email-input" class="block text-[11px] text-slate-400 mb-1">
-                  이메일 주소
-                </label>
-                <input
-                  type="email"
-                  id="author-email-input"
-                  placeholder="name@example.com"
-                  class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500"
-                >
-              </div>
-              <div>
-                <label for="author-linkedin-input" class="block text-[11px] text-slate-400 mb-1">
-                  LinkedIn URL
-                </label>
-                <input
-                  type="text"
-                  id="author-linkedin-input"
-                  placeholder="https://linkedin.com/in/..."
-                  class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500 font-mono"
-                >
-              </div>
-              <div>
-                <label for="author-blog-input" class="block text-[11px] text-slate-400 mb-1">
-                  블로그 / 포트폴리오 웹사이트 URL
-                </label>
-                <input
-                  type="text"
-                  id="author-blog-input"
-                  placeholder="https://myblog.com"
-                  class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500 font-mono"
-                >
-              </div>
+            <div>
+              <label for="author-blog-input" class="block text-[11px] text-slate-400 mb-1">
+                블로그 / 웹사이트 URL
+              </label>
+              <input
+                type="text"
+                id="author-blog-input"
+                placeholder="https://myblog.com"
+                class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:border-indigo-500 font-mono"
+              >
             </div>
           </div>
 
@@ -3866,7 +3829,7 @@ Ingenium의 창의와 지혜를 바탕으로
   "role": "enginee",
   "oneLineBio": "AI 기술을 활용해 유용한 도구를 만드는 크리에이터",
   "aboutTitle": "자기소개",
-  "aboutBio": "반갑습니다!\n\n저는 복잡한 문제를 단순하고 직관적인 웹 경험으로 풀어내는 것을 즐깁니다.\nAI와 현대적 컴퓨팅 기술을 결합하여 일상에 실질적인 가치를 더하는 도구와 경험을 만들어갑니다.\n\nEngineer의 어원인 라틴어 ingenium은\n‘타고난 재능, 지적 능력, 창의적 재주’를 의미합니다.\n창의적 지혜로 새로운 것을 설계하고 문제를 해결하는 사람이 '엔지니어'입니다.\n\n「엔지니(enginee)」는 engineer에서 영감을 받은 이름입니다.\nIngenium의 창의와 지혜를 바탕으로 \n세상을 널리 이롭게 하는 여성 엔지니어를 추구합니다.",
+  "aboutBio": "저는 복잡한 문제를 단순하고 직관적인 웹 경험으로 풀어내는 것을 즐깁니다.\nAI와 현대적 컴퓨팅 기술을 결합하여 일상에 실질적인 가치를 더하는 도구와 경험을 만들어갑니다.\n\nEngineer의 어원인 라틴어 ingenium은\n‘타고난 재능, 지적 능력, 창의적 재주’를 의미합니다.\n창의적 지혜로 새로운 것을 설계하고 문제를 해결하는 사람이 '엔지니어'입니다.\n\n「엔지니(enginee)」는 engineer에서 영감을 받은 이름입니다.\nIngenium의 창의와 지혜를 바탕으로 \n세상을 널리 이롭게 하는 여성 엔지니어를 추구합니다.",
   "skills": [
     "Security",
     "AI",
@@ -3874,9 +3837,9 @@ Ingenium의 창의와 지혜를 바탕으로
     "UI/UX Design",
     "Workflow Automation"
   ],
-  "githubUrl": "https://github.com",
-  "email": "hong@example.com",
-  "linkedinUrl": "https://linkedin.com",
+  "githubUrl": "",
+  "email": "",
+  "linkedinUrl": "",
   "blogUrl": ""
 };
 
@@ -3885,7 +3848,11 @@ Ingenium의 창의와 지혜를 바탕으로
           const stored = localStorage.getItem('profile_author_info');
           if (stored) {
             const parsed = JSON.parse(stored);
-            return { ...DEFAULT_AUTHOR_INFO, ...parsed };
+            // Clear deleted SNS items (GitHub, Email, LinkedIn)
+            parsed.githubUrl = '';
+            parsed.email = '';
+            parsed.linkedinUrl = '';
+            return { ...DEFAULT_AUTHOR_INFO, ...parsed, githubUrl: '', email: '', linkedinUrl: '' };
           }
         } catch (e) {
           console.warn('Failed to parse profile_author_info', e);
@@ -4023,31 +3990,7 @@ Ingenium의 창의와 지혜를 바탕으로
         if (!container) return;
 
         const links = [];
-        if (authorInfo.githubUrl) {
-          links.push({
-            id: 'sns-github',
-            href: authorInfo.githubUrl,
-            icon: 'fa-brands fa-github',
-            label: 'GitHub'
-          });
-        }
-        if (authorInfo.email) {
-          const mailto = authorInfo.email.startsWith('mailto:') ? authorInfo.email : `mailto:${authorInfo.email}`;
-          links.push({
-            id: 'sns-email',
-            href: mailto,
-            icon: 'fa-solid fa-envelope',
-            label: 'Email'
-          });
-        }
-        if (authorInfo.linkedinUrl) {
-          links.push({
-            id: 'sns-linkedin',
-            href: authorInfo.linkedinUrl,
-            icon: 'fa-brands fa-linkedin',
-            label: 'LinkedIn'
-          });
-        }
+        // GitHub, Email, LinkedIn deleted per user request
         if (authorInfo.blogUrl) {
           links.push({
             id: 'sns-blog',
@@ -4058,11 +4001,7 @@ Ingenium의 창의와 지혜를 바탕으로
         }
 
         if (links.length === 0) {
-          container.innerHTML = `
-            <button type="button" onclick="openAuthorIntroModal()" class="admin-only text-xs text-indigo-400 hover:text-indigo-300 underline cursor-pointer">
-              + 소셜 / 연락처 링크 추가하기
-            </button>
-          `;
+          container.innerHTML = '';
           return;
         }
 
@@ -4094,10 +4033,9 @@ Ingenium의 창의와 지혜를 바탕으로
         document.getElementById('author-about-title-input').value = authorInfo.aboutTitle || '';
         document.getElementById('author-about-bio-input').value = authorInfo.aboutBio || '';
         document.getElementById('author-skills-input').value = (authorInfo.skills || []).join(', ');
-        document.getElementById('author-github-input').value = authorInfo.githubUrl || '';
-        document.getElementById('author-email-input').value = authorInfo.email || '';
-        document.getElementById('author-linkedin-input').value = authorInfo.linkedinUrl || '';
-        document.getElementById('author-blog-input').value = authorInfo.blogUrl || '';
+        if (document.getElementById('author-blog-input')) {
+          document.getElementById('author-blog-input').value = authorInfo.blogUrl || '';
+        }
 
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modal.classList.add('opacity-100', 'pointer-events-auto');
@@ -4133,10 +4071,8 @@ Ingenium의 창의와 지혜를 바탕으로
         const aboutBio = document.getElementById('author-about-bio-input').value.trim();
         const rawSkills = document.getElementById('author-skills-input').value;
         const skills = rawSkills.split(',').map(s => s.trim()).filter(Boolean);
-        const githubUrl = document.getElementById('author-github-input').value.trim();
-        const email = document.getElementById('author-email-input').value.trim();
-        const linkedinUrl = document.getElementById('author-linkedin-input').value.trim();
-        const blogUrl = document.getElementById('author-blog-input').value.trim();
+        const blogInput = document.getElementById('author-blog-input');
+        const blogUrl = blogInput ? blogInput.value.trim() : '';
 
         saveAuthorInfo({
           name: name || authorInfo.name,
@@ -4145,9 +4081,9 @@ Ingenium의 창의와 지혜를 바탕으로
           aboutTitle,
           aboutBio,
           skills,
-          githubUrl,
-          email,
-          linkedinUrl,
+          githubUrl: '',
+          email: '',
+          linkedinUrl: '',
           blogUrl
         });
 
@@ -4576,6 +4512,7 @@ Ingenium의 창의와 지혜를 바탕으로
         renderCareerTimeline();
         renderWebapps();
         syncFoodAppTitle();
+        switchTab('apps');
         initVisitorSection();
         initBgm();
       });
@@ -5321,97 +5258,97 @@ Ingenium의 창의와 지혜를 바탕으로
       // 2-2. Dynamic Webapp Gallery & Title Management (Local Storage & CRUD)
       // ----------------------------------------------------
       const DEFAULT_WEBAPPS = [
-        {
-          id: "webapp-eatzy-v3",
-          title: "오늘 뭐 먹지?",
-          badge: "",
-          badgeColor: "orange",
-          themeColor: "orange",
-          icon: "fa-solid fa-utensils",
-          desc: "Google AI Studio로 기획·개발하여 Cloudflare Pages에 정식 배포된 스마트 메뉴 추천 웹앱.\n2단계 맞춤 취향 질문(매콤/담백, 밥/면·빵)과 실제 메뉴 사진, 꿀팁, 근처 맛집 찾기를 지원합니다.",
-          url: "https://eatzy.pages.dev/",
-          tags: [
-            "GoogleAIStudio",
-            "CloudflarePages",
-            "eatzy.pages.dev",
-            "음식추천"
-          ],
-          isFeatured: false,
-          isLive: true
-        },
-        {
-          id: "webapp-wherewego",
-          title: "구글 맵 기반 트레킹 플래너",
-          badge: "",
-          badgeColor: "emerald",
-          themeColor: "emerald",
-          icon: "fa-solid fa-map-location-dot",
-          desc: "구글 맵(Google Maps Platform)을 기반으로 맞춤 트레킹 코스와 하이킹 일정을 스마트하게 계획하고 탐색할 수 있는 반응형 웹 애플리케이션.\n경로 플래닝, 코스 거리 및 고도 확인, 주변 명소 탐색 기능을 지원합니다.",
-          url: "https://wherewego.pages.dev/",
-          tags: [
-            "GoogleMaps",
-            "CloudflarePages",
-            "Trekking",
-            "wherewego.pages.dev"
-          ],
-          isFeatured: false,
-          isLive: true
-        },
-        {
-          id: "webapp-ai-summary",
-          title: "AI 스마트 텍스트 요약기",
-          badge: "",
-          badgeColor: "purple",
-          themeColor: "purple",
-          icon: "fa-solid fa-wand-magic-sparkles",
-          desc: "긴 블로그 아티클이나 보고서를 핵심 3줄 불릿포인트 및 키워드로 신속하게 요약해주는 스마트 웹앱.\nGemini AI 기반 심층 요약 및 오프라인 규칙 요약을 지원합니다.",
-          url: "/apps/ai-summary/",
-          tags: [
-            "AI",
-            "NLP",
-            "TextSummary",
-            "Gemini"
-          ],
-          isFeatured: false,
-          isLive: true
-        },
-        {
-          id: "webapp-pomodoro",
-          title: "집중노트",
-          badge: "",
-          badgeColor: "rose",
-          themeColor: "rose",
-          icon: "fa-solid fa-clock-rotate-left",
-          desc: "25분 집중 인터벌과 즉시 자동저장되는 퀵 마크다운 노트를 지원하는 생산성 타이머 & 메모 웹앱.\n원형 카운트다운 링, 사운드 알림, 집중 할 일 체크리스트를 지원합니다.",
-          url: "/apps/pomodoro/",
-          tags: [
-            "Timer",
-            "Pomodoro",
-            "Notepad",
-            "Productivity"
-          ],
-          isFeatured: false,
-          isLive: true
-        },
-        {
-          id: "webapp-prompt-optimizer",
-          title: "프롬프트 옵티마이저",
-          badge: "",
-          badgeColor: "cyan",
-          themeColor: "cyan",
-          icon: "fa-solid fa-sliders",
-          desc: "모호한 요구사항을 입력하면 ChatGPT, Claude, Gemini에서 최고 품질의 결과를 유도하는 정교한 시스템 프롬프트로 변환해주는 AI 엔지니어링 도구.",
-          url: "/apps/prompt-optimizer/",
-          tags: [
-            "Prompt",
-            "LLM",
-            "PromptEngineering",
-            "AI"
-          ],
-          isFeatured: false,
-          isLive: true
-        }
-      ];
+  {
+    "id": "webapp-eatzy-v3",
+    "title": "오늘 뭐 먹지?",
+    "badge": "",
+    "badgeColor": "orange",
+    "themeColor": "orange",
+    "icon": "fa-solid fa-utensils",
+    "desc": "Google AI Studio로 기획·개발하여 Cloudflare Pages에 정식 배포된 스마트 메뉴 추천 웹앱.\n2단계 맞춤 취향 질문(매콤/담백, 밥/면·빵)과 실제 메뉴 사진, 꿀팁, 근처 맛집 찾기를 지원합니다.",
+    "url": "https://eatzy.pages.dev/",
+    "tags": [
+      "GoogleAIStudio",
+      "CloudflarePages",
+      "eatzy.pages.dev",
+      "음식추천"
+    ],
+    "isFeatured": false,
+    "isLive": true
+  },
+  {
+    "id": "webapp-wherewego",
+    "title": "구글 맵 기반 트레킹 플래너",
+    "badge": "",
+    "badgeColor": "emerald",
+    "themeColor": "emerald",
+    "icon": "fa-solid fa-map-location-dot",
+    "desc": "구글 맵(Google Maps Platform)을 기반으로 맞춤 트레킹 코스와 하이킹 일정을 스마트하게 계획하고 탐색할 수 있는 반응형 웹 애플리케이션.\n경로 플래닝, 코스 거리 및 고도 확인, 주변 명소 탐색 기능을 지원합니다.",
+    "url": "https://wherewego.pages.dev/",
+    "tags": [
+      "GoogleMaps",
+      "CloudflarePages",
+      "Trekking",
+      "wherewego.pages.dev"
+    ],
+    "isFeatured": false,
+    "isLive": true
+  },
+  {
+    "id": "webapp-ai-summary",
+    "title": "AI 스마트 텍스트 요약기",
+    "badge": "",
+    "badgeColor": "purple",
+    "themeColor": "purple",
+    "icon": "fa-solid fa-wand-magic-sparkles",
+    "desc": "긴 블로그 아티클이나 보고서를 핵심 3줄 불릿포인트 및 키워드로 신속하게 요약해주는 스마트 웹앱.\nGemini AI 기반 심층 요약 및 오프라인 규칙 요약을 지원합니다.",
+    "url": "/apps/ai-summary/",
+    "tags": [
+      "AI",
+      "NLP",
+      "TextSummary",
+      "Gemini"
+    ],
+    "isFeatured": false,
+    "isLive": true
+  },
+  {
+    "id": "webapp-pomodoro",
+    "title": "집중노트",
+    "badge": "",
+    "badgeColor": "rose",
+    "themeColor": "rose",
+    "icon": "fa-solid fa-clock-rotate-left",
+    "desc": "25분 집중 인터벌과 즉시 자동저장되는 퀵 마크다운 노트를 지원하는 생산성 타이머 & 메모 웹앱.\n원형 카운트다운 링, 사운드 알림, 집중 할 일 체크리스트를 지원합니다.",
+    "url": "/apps/pomodoro/",
+    "tags": [
+      "Timer",
+      "Pomodoro",
+      "Notepad",
+      "Productivity"
+    ],
+    "isFeatured": false,
+    "isLive": true
+  },
+  {
+    "id": "webapp-prompt-optimizer",
+    "title": "프롬프트 옵티마이저",
+    "badge": "",
+    "badgeColor": "cyan",
+    "themeColor": "cyan",
+    "icon": "fa-solid fa-sliders",
+    "desc": "모호한 요구사항을 입력하면 ChatGPT, Claude, Gemini에서 최고 품질의 결과를 유도하는 정교한 시스템 프롬프트로 변환해주는 AI 엔지니어링 도구.",
+    "url": "/apps/prompt-optimizer/",
+    "tags": [
+      "Prompt",
+      "LLM",
+      "PromptEngineering",
+      "AI"
+    ],
+    "isFeatured": false,
+    "isLive": true
+  }
+];
 
       function loadWebapps() {
         try {
